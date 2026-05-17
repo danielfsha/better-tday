@@ -1,7 +1,6 @@
 import { Slider as SliderPrimitive } from "@base-ui/react/slider";
 
 import { cn } from "@/lib/utils";
-import { AnimatedText } from "../animated-text";
 import { useEffect, useState } from "react";
 
 function Slider({
@@ -49,7 +48,10 @@ function Slider({
       )}
 
       <SliderPrimitive.Root
-        className={cn("data-horizontal:w-full data-vertical:h-full", className)}
+        className={cn(
+          "data-horizontal:w-full data-vertical:h-full overflow-hidden",
+          className,
+        )}
         data-slot="slider"
         defaultValue={defaultValue}
         value={value}
@@ -80,8 +82,7 @@ function Slider({
           data-slot="slider-value"
           className="tabular-nums absolute top-1/2 -translate-y-1/2 right-4 mb-2 block z-20 font-sans"
         >
-          <AnimatedText value={currentValue} animateKey={currentValue} />
-          {/* {value} */}
+          {value}
         </span>
       )}
     </div>

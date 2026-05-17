@@ -1,17 +1,19 @@
 "use client";
 
+import { AnimatedText } from "@/components/animated-text";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Home() {
+  const [value, setValue] = useState(25);
+
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
   const [segments, setSegments] = useState<[] | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSegmenting, setIsSegmenting] = useState(false);
-  const [value, setValue] = useState(50);
 
   const uploadImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -43,8 +45,20 @@ export default function Home() {
     setSegments(null);
   };
 
+  useEffect(() => {
+    // randomly genete numbers between 0 and 100 every 2 seconds to test the animated text component
+    const interval = setInterval(() => {
+      setValue(Math.floor(Math.random() * 101));
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div style={{ padding: 16 }} className="flex flex-col items-start gap-4:">
+    <div style={{ padding: 16 }} className="flex flex-col items-start gap-12">
+      <div className="font-sans text-6xl tabular-nums">
+        <AnimatedText value={String(value)} />
+      </div>
+
       <Switch />
 
       <Slider text="Radius" value={value} onValueChange={setValue} />
