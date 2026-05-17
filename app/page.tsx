@@ -54,7 +54,7 @@ export default function Home() {
   // }, []);
 
   return (
-    <div style={{ padding: 16 }} className="flex flex-col items-start gap-12">
+    <div style={{ padding: 16 }} className="flex flex-col items-start gap-4">
       <div className="font-sans text-6xl tabular-nums">
         <AnimatedText value={String(value)} />
       </div>

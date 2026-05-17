@@ -2251,7 +2251,7 @@ const MobileHoverCard: React.FC<{
 
   // On desktop, use uncontrolled mode so hover state survives parent re-renders during streaming
   return (
-    <HoverCard openDelay={10}>
+    <HoverCard>
       <HoverCardTrigger>
         <Link href={href} target="_blank" className={linkClassName}>
           {text}
@@ -2484,7 +2484,7 @@ const CitationGroup = React.memo(
 
     // On desktop, use uncontrolled mode so hover state survives parent re-renders during streaming
     return (
-      <HoverCard openDelay={10}>
+      <HoverCard>
         <HoverCardTrigger>{triggerContent}</HoverCardTrigger>
         <HoverCardContent
           side="bottom"
@@ -2881,11 +2881,14 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = React.memo(
         if (platform === "youtube" || platform === "spotify") {
           const platformConfig =
             platform === "youtube"
-              ? { name: "YouTube", icon: <Youtube className="w-3 h-3" /> }
+              ? {
+                  name: "YouTube",
+                  icon: <span className="w-3 h-3 text-red-500">YT</span>,
+                }
               : { name: "Spotify", icon: <SpotifyIcon className="w-3 h-3" /> };
 
           return (
-            <HoverCard key={key} openDelay={10}>
+            <HoverCard key={key}>
               <HoverCardTrigger>
                 <Link
                   href={href}

@@ -11,7 +11,7 @@ import { EnhancedErrorDisplay } from "@/components/message";
 import { MessagePartRenderer } from "@/components/message-parts";
 // import { SciraLogoHeader } from '@/components/scira-logo-header';
 import { deleteTrailingMessages } from "@/app/actions";
-import { Attachment, ChatMessage, CustomUIDataTypes } from "@/lib/types";
+import { Attachment, ChatMessage, CustomUIDataTypes } from "@/types";
 import { UseChatHelpers } from "@ai-sdk/react";
 import { ComprehensiveUserData } from "@/lib/user-data-server";
 // Define interface for part, messageIndex and partIndex objects

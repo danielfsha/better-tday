@@ -39,7 +39,7 @@ function Slider({
       {text && (
         <span
           data-slot="slider-text"
-          className="absolute top-1/2 -translate-y-1/2 left-4 mb-2 block z-20 font-sans text-black"
+          className="absolute top-1/2 -translate-y-1/2 left-4 mb-2 block z-20 font-sans text-black pointer-events-none"
         >
           {text}
         </span>
@@ -64,18 +64,18 @@ function Slider({
         }}
         {...props}
       >
-        <SliderPrimitive.Control className="relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-vertical:h-full data-vertical:min-h-40 data-vertical:w-auto data-vertical:flex-col">
-          <SliderPrimitive.Track className="relative grow overflow-hidden rounded-md select-none data-horizontal:h-10 data-horizontal:w-full data-vertical:h-full data-vertical:w-1 bg-gray-300 dark:bg-gray-300/10">
+        <SliderPrimitive.Control className="rounded-md overflow-hidden relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-vertical:h-full data-vertical:min-h-40 data-vertical:w-auto data-vertical:flex-col">
+          <SliderPrimitive.Track className="relative grow overflow-hidden rounded-sm select-none data-horizontal:h-10 data-horizontal:w-full data-vertical:h-full data-vertical:w-1 bg-gray-300 dark:bg-gray-300/10">
             <SliderPrimitive.Indicator
               data-slot="slider-range"
-              className="bg-primary select-none data-horizontal:h-full data-vertical:w-full rounded-tr-md rounded-br-md data-horizontal:origin-left data-vertical:origin-bottom transition-[transform] will-change-transform"
+              className="bg-primary select-none data-horizontal:h-full data-vertical:w-full rounded-tr-sm rounded-br-sm data-horizontal:origin-left data-vertical:origin-bottom transition-[transform] will-change-transform"
             />
           </SliderPrimitive.Track>
           {Array.from({ length: _values.length }, (_, index) => (
             <SliderPrimitive.Thumb
               data-slot="slider-thumb"
               key={index}
-              className="relative -ml-2.5 z-20 block w-1 h-6 shrink-0 rounded-full bg-yellow-600/50 ring-ring/50 select-none after:absolute after:left-2 after:top-1/2 after:-translate-y-1/2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
+              className="relative -ml-2.5 z-20 block w-0.5 h-4 shrink-0 rounded-full bg-orange-200 ring-ring/50 select-none after:absolute after:left-2 after:top-1/2 after:-translate-y-1/2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
             />
           ))}
         </SliderPrimitive.Control>
@@ -84,7 +84,7 @@ function Slider({
       {currentValue !== "" && (
         <span
           data-slot="slider-value"
-          className="tabular-nums absolute top-1/2 -translate-y-1/2 right-4 mb-2 block z-20 font-sans"
+          className="tabular-nums absolute top-1/2 -translate-y-1/2 right-4 mb-2 block z-20 font-sans pointer-events-none"
         >
           {value}
         </span>

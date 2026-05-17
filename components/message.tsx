@@ -1064,7 +1064,7 @@ export const Message: React.FC<MessageProps> = ({
                   {((user && isOwner) ||
                     (!user && selectedVisibilityType === "private")) && (
                     <Tooltip>
-                      <TooltipTrigger asChild>
+                      <TooltipTrigger>
                         <button
                           onClick={() => setMode("edit")}
                           className="p-1.5 rounded-full hover:bg-accent/80 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
@@ -1086,7 +1086,7 @@ export const Message: React.FC<MessageProps> = ({
                     </Tooltip>
                   )}
                   <Tooltip>
-                    <TooltipTrigger asChild>
+                    <TooltipTrigger>
                       <button
                         onClick={() => {
                           navigator.clipboard.writeText(
