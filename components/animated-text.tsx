@@ -28,7 +28,7 @@ export function AnimatedText({
                 stiffness: 520,
                 damping: 34,
                 mass: 0.35,
-                delay: index * 0.035,
+                delay: index * 0.055,
               },
             }}
             exit={{
