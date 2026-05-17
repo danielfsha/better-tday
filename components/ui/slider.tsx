@@ -3,6 +3,16 @@ import { Slider as SliderPrimitive } from "@base-ui/react/slider";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
+type SliderProps = Omit<
+  SliderPrimitive.Root.Props,
+  "value" | "defaultValue" | "onValueChange"
+> & {
+  text?: string;
+  value?: number;
+  defaultValue?: number;
+  onValueChange?: (value: number) => void;
+};
+
 function Slider({
   className,
   defaultValue,
@@ -10,29 +20,17 @@ function Slider({
   min = 0,
   max = 100,
   text = "",
+  onValueChange,
   ...props
-}: SliderPrimitive.Root.Props & { text?: string }) {
-  const initialValue = Array.isArray(value)
-    ? value.join(" - ")
-    : Array.isArray(defaultValue)
-      ? defaultValue.join(" - ")
-      : String(value ?? defaultValue ?? min);
+}: SliderProps) {
+  const initialValue = String(value ?? defaultValue ?? min);
 
   const [currentValue, setCurrentValue] = useState(initialValue);
 
-  // Keep thumb count aligned with the slider mode.
-  const _values = Array.isArray(value)
-    ? value
-    : Array.isArray(defaultValue)
-      ? defaultValue
-      : [Number(value ?? defaultValue ?? min)];
+  const _values = [Number(value ?? defaultValue ?? min)];
 
   useEffect(() => {
-    // convert to  string so i can animate it with the animated text component
-    const source = value ?? defaultValue ?? min;
-    const stringValue = Array.isArray(source)
-      ? source.join(" - ")
-      : String(source);
+    const stringValue = String(value ?? defaultValue ?? min);
     setCurrentValue(stringValue);
   }, [defaultValue, min, value]);
 
@@ -41,7 +39,7 @@ function Slider({
       {text && (
         <span
           data-slot="slider-text"
-          className="absolute top-1/2 -translate-y-1/2 left-4 mb-2 block z-20 font-sans"
+          className="absolute top-1/2 -translate-y-1/2 left-4 mb-2 block z-20 font-sans text-black"
         >
           {text}
         </span>
@@ -58,6 +56,12 @@ function Slider({
         min={min}
         max={max}
         thumbAlignment="edge"
+        onValueChange={(nextValue) => {
+          const normalizedValue = Array.isArray(nextValue)
+            ? (nextValue[0] ?? min)
+            : nextValue;
+          onValueChange?.(normalizedValue);
+        }}
         {...props}
       >
         <SliderPrimitive.Control className="relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-vertical:h-full data-vertical:min-h-40 data-vertical:w-auto data-vertical:flex-col">

@@ -3,7 +3,7 @@
 import { AnimatedText } from "@/components/animated-text";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 export default function Home() {
   const [value, setValue] = useState(25);
@@ -45,13 +45,13 @@ export default function Home() {
     setSegments(null);
   };
 
-  useEffect(() => {
-    // randomly genete numbers between 0 and 100 every 2 seconds to test the animated text component
-    const interval = setInterval(() => {
-      setValue(Math.floor(Math.random() * 101));
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   // randomly genete numbers between 0 and 100 every 2 seconds to test the animated text component
+  //   const interval = setInterval(() => {
+  //     setValue(Math.floor(Math.random() * 101));
+  //   }, 2000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <div style={{ padding: 16 }} className="flex flex-col items-start gap-12">
