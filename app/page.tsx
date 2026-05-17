@@ -26,6 +26,27 @@ export default function Home() {
       alert("Failed to upload file");
     }
   };
+
+  const segmentImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!uploadedFileUrl) return;
+
+    const response = await fetch("/api/hugging-face", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: uploadedFileUrl }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    if (response.ok) {
+      alert("Image segmented successfully");
+    } else {
+      alert("Failed to segment image");
+    }
+  };
+
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black font-sans">
       {file && (
@@ -71,6 +92,14 @@ export default function Home() {
           Upload
         </button>
       </form>
+
+      <button
+        className="btn btn-secondary mt-4"
+        onClick={segmentImage}
+        disabled={!uploadedFileUrl}
+      >
+        Segment Image
+      </button>
     </div>
   );
 }

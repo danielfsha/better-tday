@@ -1,68 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
+import { HfInference } from "@huggingface/inference";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
+const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY;
+const MODEL = "facebook/detr-resnet-50-panoptic";
+
+if (!HUGGINGFACE_API_KEY) {
+  throw new Error("HUGGINGFACE_API_KEY is not set in environment variables");
+}
+
+const hf = new HfInference(HUGGINGFACE_API_KEY);
+
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
+    const body = await req.json();
+    const imageUrl: string | undefined = body?.url;
 
-    const file = formData.get("image") as File | null;
-
-    if (!file) {
-      return NextResponse.json({ error: "No image uploaded" }, { status: 400 });
-    }
-
-    const bytes = await file.arrayBuffer();
-
-    const response = await fetch(
-      "https://api-inference.huggingface.co/models/Qwen/Qwen-Image-Layered",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-          "Content-Type": file.type || "application/octet-stream",
-        },
-        body: bytes,
-      },
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-
+    if (!imageUrl) {
       return NextResponse.json(
-        {
-          error: "Hugging Face request failed",
-          details: errorText,
-        },
-        { status: response.status },
+        { error: "Missing 'url' in request body" },
+        { status: 400 },
       );
     }
 
-    /**
-     * Depending on the endpoint,
-     * Hugging Face may return:
-     * - image blob
-     * - JSON
-     * - binary output
-     */
+    const imageRes = await fetch(imageUrl);
 
-    const contentType = response.headers.get("content-type");
-
-    // JSON response
-    if (contentType?.includes("application/json")) {
-      const data = await response.json();
-
-      return NextResponse.json(data);
+    if (!imageRes.ok) {
+      return NextResponse.json(
+        { error: `Failed to fetch image from R2: ${imageRes.status}` },
+        { status: 502 },
+      );
     }
 
-    // Image response
-    const buffer = Buffer.from(await response.arrayBuffer());
+    const imageBlob = await imageRes.blob();
 
-    return new NextResponse(buffer, {
-      headers: {
-        "Content-Type": contentType || "image/png",
-      },
+    const result = await hf.imageSegmentation({
+      model: MODEL,
+      inputs: imageBlob,
+    });
+
+    console.log("Segmentation result:", result);
+
+    return NextResponse.json({
+      message: "Image processed successfully",
+      result,
     });
   } catch (error) {
     console.error(error);
