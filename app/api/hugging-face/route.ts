@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 export const maxDuration = 300;
 
 const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY;
-const MODEL = "facebook/detr-resnet-50-panoptic";
+const MODEL = "nvidia/segformer-b5-finetuned-ade-640-640";
 
 if (!HUGGINGFACE_API_KEY) {
   throw new Error("HUGGINGFACE_API_KEY is not set in environment variables");

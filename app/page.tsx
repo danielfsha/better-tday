@@ -1,13 +1,23 @@
 "use client";
 
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import React, { useState } from "react";
+
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
+  const [segments, setSegments] = useState<[] | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isSegmenting, setIsSegmenting] = useState(false);
+  const [value, setValue] = useState(50);
 
   const uploadImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!file) return;
+    setIsUploading(true);
+    setSegments(null);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -16,90 +26,61 @@ export default function Home() {
       method: "POST",
       body: formData,
     });
-
     const data = await response.json();
-    console.log(data);
+    setIsUploading(false);
 
     if (response.ok) {
       setUploadedFileUrl(data.url);
     } else {
-      alert("Failed to upload file");
+      alert("Upload failed");
     }
   };
 
   const segmentImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!uploadedFileUrl) return;
-
-    const response = await fetch("/api/hugging-face", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: uploadedFileUrl }),
-    });
-
-    const data = await response.json();
-    console.log(data);
-
-    if (response.ok) {
-      alert("Image segmented successfully");
-    } else {
-      alert("Failed to segment image");
-    }
+    setIsSegmenting(true);
+    setSegments(null);
   };
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black font-sans">
-      {file && (
-        <div className="mt-4">
-          <h2 className="text-lg font-semibold">Uploaded File:</h2>
-          <ul className="flex flex-col gap-2">
-            <img
-              src={URL.createObjectURL(file)}
-              alt="Uploaded"
-              className="max-w-xs mt-2"
-            />
-            <li>{file.name}</li>
-          </ul>
-        </div>
-      )}
+    <div style={{ padding: 16 }} className="flex flex-col items-start gap-4:">
+      <Switch />
 
-      {uploadedFileUrl && (
-        <div className="mt-4">
-          <h2 className="text-lg font-semibold">File URL:</h2>
-          <a
-            href={uploadedFileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 underline"
-          >
-            {uploadedFileUrl}
-          </a>
-        </div>
-      )}
+      <Slider text="Radius" value={value} onValueChange={setValue} />
 
-      <form>
+      <form
+        style={{
+          display: "flex",
+          gap: 8,
+          alignItems: "center",
+          marginBottom: 12,
+        }}
+      >
         <input
           type="file"
-          className="file-input file-input-bordered file-input-primary w-full max-w-xs"
+          accept="image/*"
           onChange={(e) => {
-            if (e.target.files && e.target.files.length > 0) {
-              setFile(e.target.files[0]);
-            }
+            const f = e.target.files?.[0] ?? null;
+            setFile(f);
+            setPreviewUrl(f ? URL.createObjectURL(f) : null);
+            setUploadedFileUrl(null);
+            setSegments(null);
           }}
         />
-
-        <button className="btn btn-primary mt-4" onClick={uploadImage}>
-          Upload
+        <button onClick={uploadImage} disabled={!file || isUploading}>
+          {isUploading ? "Uploading\u2026" : "Upload"}
         </button>
+        {uploadedFileUrl && (
+          <button onClick={segmentImage} disabled={isSegmenting}>
+            {isSegmenting ? "Segmenting\u2026" : "Segment"}
+          </button>
+        )}
       </form>
 
-      <button
-        className="btn btn-secondary mt-4"
-        onClick={segmentImage}
-        disabled={!uploadedFileUrl}
-      >
-        Segment Image
-      </button>
+      {previewUrl && !segments && (
+        <img src={previewUrl} alt="preview" style={{ maxHeight: 300 }} />
+      )}
     </div>
   );
 }
