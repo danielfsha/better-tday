@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
+  const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
 
   const uploadImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -18,6 +19,12 @@ export default function Home() {
 
     const data = await response.json();
     console.log(data);
+
+    if (response.ok) {
+      setUploadedFileUrl(data.url);
+    } else {
+      alert("Failed to upload file");
+    }
   };
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black font-sans">
@@ -32,6 +39,20 @@ export default function Home() {
             />
             <li>{file.name}</li>
           </ul>
+        </div>
+      )}
+
+      {uploadedFileUrl && (
+        <div className="mt-4">
+          <h2 className="text-lg font-semibold">File URL:</h2>
+          <a
+            href={uploadedFileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline"
+          >
+            {uploadedFileUrl}
+          </a>
         </div>
       )}
 
