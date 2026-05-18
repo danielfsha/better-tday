@@ -23,19 +23,19 @@ function Slider({
   onValueChange,
   ...props
 }: SliderProps) {
-  const initialValue = String(value ?? defaultValue ?? min);
+  const initialValue = Number(value ?? defaultValue ?? min);
 
-  const [currentValue, setCurrentValue] = useState(initialValue);
+  const [currentValue, setCurrentValue] = useState(String(initialValue));
 
-  const _values = [Number(value ?? defaultValue ?? min)];
+  const sliderValue = Number(currentValue);
+  const _values = [sliderValue];
 
   useEffect(() => {
-    const stringValue = String(value ?? defaultValue ?? min);
-    setCurrentValue(stringValue);
+    setCurrentValue(String(Number(value ?? defaultValue ?? min)));
   }, [defaultValue, min, value]);
 
   return (
-    <div className="w-full h-auto relative">
+    <div className="w-full relative">
       {text && (
         <span
           data-slot="slider-text"
@@ -52,7 +52,7 @@ function Slider({
         )}
         data-slot="slider"
         defaultValue={defaultValue}
-        value={value}
+        value={sliderValue}
         min={min}
         max={max}
         thumbAlignment="edge"
@@ -60,6 +60,7 @@ function Slider({
           const normalizedValue = Array.isArray(nextValue)
             ? (nextValue[0] ?? min)
             : nextValue;
+          setCurrentValue(String(normalizedValue));
           onValueChange?.(normalizedValue);
         }}
         {...props}
@@ -75,7 +76,7 @@ function Slider({
             <SliderPrimitive.Thumb
               data-slot="slider-thumb"
               key={index}
-              className="relative -ml-2.5 z-20 block w-0.5 h-4 shrink-0 rounded-full bg-orange-200 ring-ring/50 select-none after:absolute after:left-2 after:top-1/2 after:-translate-y-1/2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
+              className="cursor-e-resize relative -ml-2.5 z-20 block w-0.5 h-4 shrink-0 rounded-full bg-orange-200 ring-ring/50 select-none after:absolute after:left-2 after:top-1/2 after:-translate-y-1/2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
             />
           ))}
         </SliderPrimitive.Control>
@@ -86,7 +87,7 @@ function Slider({
           data-slot="slider-value"
           className="tabular-nums absolute top-1/2 -translate-y-1/2 right-4 mb-2 block z-20 font-sans pointer-events-none"
         >
-          {value}
+          {currentValue}
         </span>
       )}
     </div>

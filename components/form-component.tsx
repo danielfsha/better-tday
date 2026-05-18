@@ -1,71 +1,18 @@
-/* eslint-disable @next/next/no-img-element */
-import React, { useCallback, useEffect, useRef } from "react";
-import { sileo } from "sileo";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { Textarea } from "@/components/ui/textarea";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import type { Attachment, ChatMessage } from "@/types";
+import { ArrowUDownLeftIcon } from "@phosphor-icons/react";
+import { PlusIcon } from "lucide-react";
+import { Button } from "./ui/button";
 
-type FormMessagePart =
-  | {
-      type: "file";
-      url: string;
-      name: string;
-      mediaType: string;
-    }
-  | {
-      type: "text";
-      text: string;
-    };
-
-interface FormComponentProps {
-  input: string;
-  setInput: (input: string) => void;
-  attachments: Attachment[];
-  clearAttachments: () => void;
-  chatId: string;
-  user: { id?: string } | null;
-  fileInputRef: React.RefObject<HTMLInputElement>;
-  inputRef: React.RefObject<HTMLTextAreaElement>;
-  messages: ChatMessage[];
-  sendMessage: (message: {
-    role: "user";
-    parts: FormMessagePart[];
-  }) => void | Promise<void>;
-  resetSuggestedQuestions: () => void;
-  lastSubmittedQueryRef: React.RefObject<string>;
-  status: string;
-  setHasSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
-  isLimitBlocked?: boolean;
-  isTemporaryChatEnabled: boolean;
-  onBeforeSubmit?: () => void;
-}
-
-const FormComponent: React.FC<FormComponentProps> = ({
-  chatId,
-  user,
-  input,
-  setInput,
-  attachments,
-  clearAttachments,
-  sendMessage,
-  fileInputRef,
-  inputRef,
-  resetSuggestedQuestions,
-  lastSubmittedQueryRef,
-  messages,
-  status,
-  setHasSubmitted,
-  isLimitBlocked = false,
-  isTemporaryChatEnabled,
-  onBeforeSubmit,
-}) => {
-  const resizeRafRef = useRef<number>(0);
+const FormComponent: React.FC = () => {
+  const [input, setInput] = useState("");
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const isCompositionActive = useRef(false);
   const isMounted = useRef(true);
   const isMobile = useIsMobile();
-  const hasInteracted = messages.length > 0;
 
   const handleInput = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -110,7 +57,6 @@ const FormComponent: React.FC<FormComponentProps> = ({
 
     return () => {
       isMounted.current = false;
-      cancelAnimationFrame(resizeRafRef.current);
     };
   }, []);
 
@@ -158,20 +104,16 @@ const FormComponent: React.FC<FormComponentProps> = ({
   }, [input, inputRef, setInput]);
 
   return (
-    <div className="bg-gray-300">
+    <div className="border-none bg-gray-300 p-0 w-full max-w-[550px] rounded-lg flex flex-col overflow-hidden gap-1">
       <Textarea
         ref={inputRef}
-        placeholder={hasInteracted ? "Ask a follow-up..." : ""}
+        placeholder="Ask a follow-up..."
         value={input}
         onChange={handleInput}
         onFocus={handleTextareaFocus}
         className={cn(
-          "w-full text-[16px]! bg-transparent",
-          "leading-normal",
-          "text-foreground!",
-          "min-h-0!",
-          "px-4! py-3.5!",
-          "focus:border-none focus:ring-0 focus:ring-offset-0",
+          "font-sans min-h-11 resize-none border-none bg-transparent px-4 py-3 shadow-none outline-none focus-visible:ring-0 text-md",
+          "active:border-none focus:border-none",
         )}
         rows={1}
         autoFocus
@@ -183,6 +125,14 @@ const FormComponent: React.FC<FormComponentProps> = ({
         }}
         onKeyDown={handleKeyDown}
       />
+      <div className="flex items-center justify-between p-1">
+        <Button variant="ghost" size="icon-lg">
+          <PlusIcon size={26} />
+        </Button>
+        <Button variant="ghost" size="icon-lg">
+          <ArrowUDownLeftIcon size={26} />
+        </Button>
+      </div>
     </div>
   );
 };

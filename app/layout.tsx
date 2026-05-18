@@ -46,7 +46,10 @@ export default function RootLayout({
         inter.variable,
       )}
     >
-      <body className="flex h-svh overflow-hidden" suppressHydrationWarning>
+      <body
+        className="flex h-svh overflow-hidden font-sans"
+        suppressHydrationWarning
+      >
         <Providers>{children}</Providers>
       </body>
     </html>
