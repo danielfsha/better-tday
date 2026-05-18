@@ -75,7 +75,7 @@ export default function AppSidebar() {
           </Avatar>
 
           <div className="flex flex-col items-start justify-start">
-            <p>John Doe</p>
+            <p className="text-sm">John Doe</p>
             <span className="text-sm -mt-1 opacity-60">jonhdoe@gmail.com</span>
           </div>
         </div>

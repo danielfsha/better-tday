@@ -1,17 +1,23 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
+import Image from "next/image";
 
 import { Textarea } from "@/components/ui/textarea";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { ArrowUDownLeftIcon } from "@phosphor-icons/react";
+import {
+  ArrowUDownLeftIcon,
+  CaretRightIcon,
+  FileIcon,
+  PaperclipIcon,
+  SwatchesIcon,
+} from "@phosphor-icons/react";
 import { PlusIcon } from "lucide-react";
+import { useDropzone } from "react-dropzone";
 import { Button } from "./ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverDescription,
-  PopoverHeader,
-  PopoverTitle,
   PopoverTrigger,
 } from "./ui/popover";
 
@@ -19,8 +25,9 @@ const FormComponent: React.FC = () => {
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const isCompositionActive = useRef(false);
-  const isMounted = useRef(true);
-  const isMobile = useIsMobile();
+  useIsMobile();
+
+  const [files, setFiles] = useState<File[]>([]);
 
   const handleInput = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -29,96 +36,132 @@ const FormComponent: React.FC = () => {
     [setInput],
   );
 
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (event.key !== "Enter" || isCompositionActive.current) {
-        return;
-      }
-
-      if (isMobile || event.shiftKey) {
-        return;
-      }
-
-      event.preventDefault();
-      event.stopPropagation();
-    },
-    [isMobile],
-  );
-
-  const handleTextareaFocus = useCallback(
-    (event: React.FocusEvent<HTMLTextAreaElement>) => {
-      const textarea = event.target;
-      if (
-        textarea.value.length > 0 &&
-        textarea.selectionStart === 0 &&
-        textarea.selectionEnd === 0
-      ) {
-        const length = textarea.value.length;
-        textarea.setSelectionRange(length, length);
-      }
-    },
+  const isAcceptedFile = useCallback(
+    (file: File) =>
+      [
+        "image/",
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ].some((type) =>
+        type === "image/" ? file.type.startsWith("image/") : file.type === type,
+      ),
     [],
   );
 
-  useEffect(() => {
-    isMounted.current = true;
+  const addFiles = useCallback(
+    (incomingFiles: File[]) => {
+      const filteredFiles = incomingFiles.filter(isAcceptedFile);
 
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
+      setFiles((prevFiles) => {
+        const existing = new Set(
+          prevFiles.map(
+            (file) => `${file.name}-${file.size}-${file.lastModified}`,
+          ),
+        );
 
-  useEffect(() => {
-    const handleGlobalKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement;
-      if (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.contentEditable === "true" ||
-        target.closest('[contenteditable="true"]')
-      ) {
-        return;
-      }
+        const uniqueFiles = filteredFiles.filter((file) => {
+          const fileKey = `${file.name}-${file.size}-${file.lastModified}`;
+          if (existing.has(fileKey)) return false;
+          existing.add(fileKey);
+          return true;
+        });
 
-      if (
-        event.ctrlKey ||
-        event.metaKey ||
-        event.altKey ||
-        event.key.length !== 1
-      ) {
-        return;
-      }
-
-      if (!inputRef.current || document.activeElement === inputRef.current) {
-        return;
-      }
-
-      if (event.key === " " && input.length === 0) {
-        return;
-      }
-
-      const nextValue = `${input}${event.key}`;
-      setInput(nextValue);
-      inputRef.current.focus();
-      event.preventDefault();
-
-      requestAnimationFrame(() => {
-        inputRef.current?.setSelectionRange(nextValue.length, nextValue.length);
+        return [...prevFiles, ...uniqueFiles];
       });
-    };
+    },
+    [isAcceptedFile],
+  );
 
-    document.addEventListener("keydown", handleGlobalKeyDown);
-    return () => document.removeEventListener("keydown", handleGlobalKeyDown);
-  }, [input, inputRef, setInput]);
+  const onDrop = useCallback(
+    (acceptedDropFiles: File[]) => {
+      addFiles(acceptedDropFiles);
+    },
+    [addFiles],
+  );
+
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+    onDrop,
+    noClick: true,
+    multiple: true,
+    accept: {
+      "image/*": [],
+      "application/pdf": [],
+      "application/msword": [],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        [],
+    },
+  });
+
+  const triggerFileInput = useCallback(() => {
+    open();
+  }, [open]);
 
   return (
-    <div className="border-none bg-gray-300 p-0 w-full max-w-[550px] rounded-lg flex flex-col overflow-hidden gap-1">
+    <div
+      {...getRootProps({
+        className: cn(
+          "w-full max-w-137.5 rounded-lg bg-gray-300 p-0 flex flex-col overflow-hidden gap-1 relative",
+        ),
+      })}
+    >
+      <input {...getInputProps()} />
+
+      {isDragActive && (
+        <div className="absolute inset-0 z-40 flex items-center justify-center bg-orange-500/20 text-orange-600 bg-blur-sm rounded-lg border border-dashed border-orange-500">
+          <span className="text-sm font-sans">Drop files here</span>
+        </div>
+      )}
+
+      {files.length > 0 && (
+        <div className="flex flex-row gap-2 p-2">
+          {files.map((file, index) => (
+            <div
+              key={index}
+              draggable={false}
+              onDragStart={(event) => event.preventDefault()}
+              className="relative w-32 h-32 rounded-md bg-gray-200 overflow-hidden flex"
+            >
+              {/* x button */}
+              <Button
+                variant="secondary"
+                size="icon-lg"
+                onClick={() =>
+                  setFiles((prevFiles) =>
+                    prevFiles.filter((_, i) => i !== index),
+                  )
+                }
+                className="absolute right-1 top-1 z-10 size-6 rounded-full bg-gray-700 hover:bg-gray-700 text-white"
+                tabIndex={-1}
+              >
+                &times;
+              </Button>
+
+              {file.type.startsWith("image/") ? (
+                <Image
+                  draggable={false}
+                  onDragStart={(event) => event.preventDefault()}
+                  src={URL.createObjectURL(file)}
+                  alt={file.name}
+                  unoptimized
+                  fill
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-full h-full rounded-sm bg-white">
+                  <FileIcon size={32} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
       <Textarea
         ref={inputRef}
         placeholder="Ask a follow-up..."
         value={input}
         onChange={handleInput}
-        onFocus={handleTextareaFocus}
         className={cn(
           "font-sans min-h-11 resize-none border-none bg-transparent px-4 py-3 shadow-none outline-none focus-visible:ring-0 text-md",
           "active:border-none focus:border-none",
@@ -131,7 +174,6 @@ const FormComponent: React.FC = () => {
         onCompositionEnd={() => {
           isCompositionActive.current = false;
         }}
-        onKeyDown={handleKeyDown}
       />
       <div className="flex items-center justify-between p-1">
         <Popover>
@@ -140,11 +182,26 @@ const FormComponent: React.FC = () => {
               <PlusIcon size={26} />
             </Button>
           </PopoverTrigger>
-          <PopoverContent align="start">
-            <PopoverHeader>
-              <PopoverTitle>Title</PopoverTitle>
-              <PopoverDescription>Description text here.</PopoverDescription>
-            </PopoverHeader>
+          <PopoverContent align="start" className={"gap-0 p-1"}>
+            <div className="flex items-center justify-betweeen w-full hover:bg-gray-300 p-1 py-1.5 rounded-sm cursor-pointer">
+              <div
+                onClick={triggerFileInput}
+                className="flex items-center justify-start gap-4 flex-1"
+              >
+                <PaperclipIcon weight="regular" size={20} />
+                <PopoverDescription>
+                  Upload image form device
+                </PopoverDescription>
+              </div>
+              {/* <CaretRightIcon /> */}
+            </div>
+            <div className="flex items-center justify-betweeen w-full hover:bg-gray-300 p-1 py-1.5 rounded-sm cursor-pointer">
+              <div className="flex items-center justify-start gap-4 flex-1">
+                <SwatchesIcon weight="fill" size={20} />
+                <PopoverDescription>Extract brand guide.</PopoverDescription>
+              </div>
+              <CaretRightIcon />
+            </div>
           </PopoverContent>
         </Popover>
         <Button variant="ghost" size="icon-lg">

@@ -127,6 +127,19 @@
   html {
     @apply font-sans;
   }
+
+  * {
+    /* Hides scrollbar in Firefox */
+    scrollbar-width: none;
+
+    /* Hides scrollbar in IE and old Edge */
+    -ms-overflow-style: none;
+  }
+
+  /* Hides scrollbar in Chrome, Safari, and Opera */
+  *::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Line clamp utilities */
