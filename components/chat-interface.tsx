@@ -16,7 +16,7 @@ import Link from "next/link";
 // Third-party library imports
 import { useChat } from "@ai-sdk/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CrownIcon, PlusIcon } from "@phosphor-icons/react";
+import { CrownIcon, PlusIcon, UserCircleIcon } from "@phosphor-icons/react";
 import { useRouter, usePathname } from "next/navigation";
 import { sileo } from "sileo";
 import { v7 as uuidv7 } from "uuid";
@@ -29,7 +29,7 @@ import {
 } from "@/app/actions";
 
 // Component imports
-import { ChatDialogs } from "@/components/chat-dialogs";
+import { ChatDialogs } from "@/components/chat-dialog";
 import Messages from "@/components/messages";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
@@ -38,8 +38,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import FormComponent from "@/components/ui/form-component";
-import { ShareDialog } from "@/components/share/share-dialog";
+import FormComponent from "@/components/form-component";
+import { ShareDialog } from "@/components/share-dialog";
 import { ExampleCategories } from "@/components/example-categories";
 import {
   Pencil,
@@ -47,9 +47,7 @@ import {
   Share as ShareIcon,
   ChevronDown,
   X,
-  Check,
   AlertCircle,
-  ExternalLink,
   ArrowRight,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -97,7 +95,7 @@ import { requiresProSubscription } from "@/ai/models";
 import { ConnectorProvider } from "@/lib/connectors";
 
 // State management imports
-import { chatReducer, createInitialState } from "@/components/chat-state";
+import { chatReducer, createInitialState } from "@/lib/chat-state";
 import { useDataStream } from "./data-stream-provider";
 import { DefaultChatTransport } from "ai";
 import { ChatMessage } from "@/lib/types";
@@ -1603,10 +1601,7 @@ const ChatInterface = memo(
                                   {localChatTitle}
                                 </span>
                               </Button>
-                              <DropdownMenuTrigger
-                                asChild
-                                className="focus:outline-none! focus:ring-0! focus:ring-offset-0!"
-                              >
+                              <DropdownMenuTrigger className="focus:outline-none! focus:ring-0! focus:ring-offset-0!">
                                 <Button
                                   ref={chevronBtnRef}
                                   variant="ghost"
@@ -1629,7 +1624,7 @@ const ChatInterface = memo(
                             side="bottom"
                             align="start"
                             alignOffset={-95}
-                            avoidCollisions={false}
+                            // avoidCollisions={false}
                             className="rounded-md border border-border bg-popover shadow-lg p-1"
                           >
                             <DropdownMenuItem

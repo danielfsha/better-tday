@@ -4,4 +4,4 @@ import { lastLoginMethodClient } from "better-auth/client/plugins";
 export const authClient = createAuthClient({
   plugins: [lastLoginMethodClient()],
 });
-export const { signIn, signUp, useSession } = authClient;
+export const { signIn, signUp, signOut, useSession } = authClient;

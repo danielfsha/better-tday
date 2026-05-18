@@ -245,10 +245,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { getModelConfig } from "@/ai/models";
 import { ComprehensiveUserData } from "@/lib/user-data-server";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Spinner } from "../ui/spinner";
+import { Spinner } from "@/components/spinner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 // Eagerly load tool components for better UX (except browser-only components)
