@@ -9,6 +9,7 @@ import FormComponent from "./form-component";
 import { AnimatedText } from "./animated-text";
 import NumberFlow from "@number-flow/react";
 import { useState } from "react";
+import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export default function ChatInterface() {
   const [value, setValue] = useState(50);
@@ -24,7 +25,7 @@ export default function ChatInterface() {
         transition={{ type: "spring", stiffness: 420, damping: 28, mass: 0.9 }}
         className="relative flex min-w-0 flex-1 flex-col overflow-hidden"
       >
-        <header className="absolute top-0 left-0 w-full flex items-center justify-between gap-4 border-b border-border/60 px-4 py-3">
+        <header className="absolute top-0 left-0 w-full flex items-center justify-between gap-4 border-b border-border/60 px-4 py-1">
           <motion.div
             layout
             animate={{ x: isExpanded ? 0 : 8, scale: isExpanded ? 1 : 0.98 }}
@@ -43,6 +44,14 @@ export default function ChatInterface() {
               <NumberFlow value={value} />
             </span>
           </motion.div>
+
+          <Avatar>
+            <AvatarImage
+              src="https://github.com/evilrabbit.png"
+              alt="@evilrabbit"
+            />
+            <AvatarFallback>ER</AvatarFallback>
+          </Avatar>
         </header>
 
         <motion.section

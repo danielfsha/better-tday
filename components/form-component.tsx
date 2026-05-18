@@ -6,6 +6,14 @@ import { cn } from "@/lib/utils";
 import { ArrowUDownLeftIcon } from "@phosphor-icons/react";
 import { PlusIcon } from "lucide-react";
 import { Button } from "./ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "./ui/popover";
 
 const FormComponent: React.FC = () => {
   const [input, setInput] = useState("");
@@ -126,9 +134,19 @@ const FormComponent: React.FC = () => {
         onKeyDown={handleKeyDown}
       />
       <div className="flex items-center justify-between p-1">
-        <Button variant="ghost" size="icon-lg">
-          <PlusIcon size={26} />
-        </Button>
+        <Popover>
+          <PopoverTrigger>
+            <Button variant="ghost" size="icon-lg">
+              <PlusIcon size={26} />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="start">
+            <PopoverHeader>
+              <PopoverTitle>Title</PopoverTitle>
+              <PopoverDescription>Description text here.</PopoverDescription>
+            </PopoverHeader>
+          </PopoverContent>
+        </Popover>
         <Button variant="ghost" size="icon-lg">
           <ArrowUDownLeftIcon size={26} />
         </Button>
