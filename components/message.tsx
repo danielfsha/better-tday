@@ -2,8 +2,6 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
 import {
@@ -14,7 +12,7 @@ import {
 import { sileo } from "sileo";
 import { all } from "better-all";
 import { getBetterAllOptions } from "@/lib/better-all";
-import { checkImageModeration } from "@/app/actions";
+import { checkImageModeration } from "@/actions";
 import {
   ChevronDown,
   ChevronLeft,
@@ -34,7 +32,7 @@ import {
   Upload,
 } from "lucide-react";
 import { UIMessagePart } from "ai";
-import { deleteTrailingMessages } from "@/app/actions";
+import { deleteTrailingMessages } from "@/actions";
 import {
   getErrorActions,
   getErrorIcon,
@@ -42,19 +40,13 @@ import {
   isProRequired,
   isRateLimited,
 } from "@/lib/errors";
-import { UserIcon } from "@phosphor-icons/react";
-import { HugeiconsIcon } from "@/components/ui/hugeicons";
 import {
-  Copy01Icon,
-  Crown02Icon,
-  PencilEdit02Icon,
-} from "@hugeicons/core-free-icons";
-import {
-  Attachment,
-  ChatMessage,
-  ChatTools,
-  CustomUIDataTypes,
-} from "@/lib/types";
+  CopyIcon,
+  CrownIcon,
+  PencilIcon,
+  UserIcon,
+} from "@phosphor-icons/react";
+import { Attachment, ChatMessage, ChatTools, CustomUIDataTypes } from "@/types";
 import { UseChatHelpers } from "@ai-sdk/react";
 import { ComprehensiveUserData } from "@/lib/user-data-server";
 import { cn } from "@/lib/utils";
@@ -131,8 +123,7 @@ const EnhancedErrorDisplay: React.FC<EnhancedErrorDisplayProps> = ({
         );
       case "upgrade":
         return (
-          <HugeiconsIcon
-            icon={Crown02Icon}
+          <CrownIcon
             size={16}
             color="currentColor"
             strokeWidth={1.5}
@@ -305,8 +296,7 @@ const EnhancedErrorDisplay: React.FC<EnhancedErrorDisplayProps> = ({
                     <LogIn className="mr-2 h-3.5 w-3.5" />
                   )}
                   {actions.primary.action === "upgrade" && (
-                    <HugeiconsIcon
-                      icon={Crown02Icon}
+                    <CrownIcon
                       size={14}
                       color="currentColor"
                       strokeWidth={1.5}
@@ -1073,11 +1063,7 @@ export const Message: React.FC<MessageProps> = ({
                           }
                           aria-label="Edit message"
                         >
-                          <HugeiconsIcon
-                            icon={PencilEdit02Icon}
-                            size={18}
-                            className="size-[18px]"
-                          />
+                          <PencilIcon size={18} className="size-[18px]" />
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -1102,11 +1088,7 @@ export const Message: React.FC<MessageProps> = ({
                         className="p-1.5 rounded-full hover:bg-accent/80 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                         aria-label="Copy message"
                       >
-                        <HugeiconsIcon
-                          icon={Copy01Icon}
-                          size={18}
-                          className="size-[18px]"
-                        />
+                        <CopyIcon size={18} className="size-[18px]" />
                       </button>
                     </TooltipTrigger>
                     <TooltipContent>

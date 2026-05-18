@@ -16,11 +16,8 @@ import Link from "next/link";
 // Third-party library imports
 import { useChat } from "@ai-sdk/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { HugeiconsIcon } from "@/components/ui/hugeicons";
-import { Crown02Icon, UserCircleIcon } from "@hugeicons/core-free-icons";
-import { PlusIcon } from "@phosphor-icons/react";
+import { CrownIcon, PlusIcon } from "@phosphor-icons/react";
 import { useRouter, usePathname } from "next/navigation";
-import { parseAsString, useQueryState } from "nuqs";
 import { sileo } from "sileo";
 import { v7 as uuidv7 } from "uuid";
 
@@ -57,7 +54,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { deleteChat, updateChatTitle } from "@/app/actions";
+import { deleteChat, updateChatTitle } from "@/actions";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
   Dialog,
@@ -1508,7 +1505,7 @@ const ChatInterface = memo(
 
                     {user ? (
                       <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                        <DropdownMenuTrigger>
                           <button
                             className={cn(
                               "inline-flex items-center justify-center gap-0.5 h-8 w-8 rounded-md",
@@ -1573,8 +1570,7 @@ const ChatInterface = memo(
                         </DropdownMenuContent>
                       </DropdownMenu>
                     ) : (
-                      <HugeiconsIcon
-                        icon={UserCircleIcon}
+                      <UserCircleIcon
                         size={24}
                         className="size-7 shrink-0 self-start"
                       />
@@ -1804,11 +1800,10 @@ const ChatInterface = memo(
                         {/* Header Section */}
                         <div className="text-center px-8 pt-10 pb-6">
                           <div className="inline-flex items-center justify-center w-12 h-12 bg-muted rounded-lg mb-6">
-                            <HugeiconsIcon
-                              icon={Crown02Icon}
+                            <CrownIcon
                               size={24}
                               className="text-muted-foreground"
-                              strokeWidth={1.5}
+                              weight="bold"
                             />
                           </div>
                           <h2 className="text-xl font-semibold text-foreground mb-2">
@@ -1846,12 +1841,7 @@ const ChatInterface = memo(
                               }}
                               className="w-full h-10 font-medium"
                             >
-                              <HugeiconsIcon
-                                icon={Crown02Icon}
-                                size={16}
-                                className="mr-2"
-                                strokeWidth={1.5}
-                              />
+                              <CrownIcon size={16} className="mr-2" />
                               {isUserMax ? "Manage Max" : "Upgrade to Max"}
                             </Button>
                             <Button
@@ -2059,8 +2049,7 @@ const ChatInterface = memo(
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="flex items-center justify-center w-8 h-8 bg-muted rounded-md">
-                          <HugeiconsIcon
-                            icon={Crown02Icon}
+                          <CrownIcon
                             size={16}
                             strokeWidth={1.5}
                             className="text-muted-foreground"

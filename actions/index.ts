@@ -43,7 +43,7 @@ import {
   getChatWithUserById,
 } from "@/lib/db/queries";
 import { extractChatPreview } from "@/lib/search-utils";
-import { db, maindb } from "@/lib/db";
+import { db, maindb } from "@/db";
 import {
   chat,
   message,

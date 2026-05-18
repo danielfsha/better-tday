@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatedMaskRevealText } from "@/components/animated-mask-reveal-text";
 import { AnimatedText } from "@/components/animated-text";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -55,13 +56,18 @@ export default function Home() {
 
   return (
     <div style={{ padding: 16 }} className="flex flex-col items-start gap-4">
-      <div className="font-sans text-6xl tabular-nums">
+      <div className="font-mono text-6xl tabular-nums ">
         <AnimatedText value={String(value)} />
       </div>
 
       <Switch />
 
       <Slider text="Radius" value={value} onValueChange={setValue} />
+
+      <AnimatedMaskRevealText
+        text={"What would you like\n to design tday?"}
+        className="text-4xl lg:text-6xl mx-auto font-serif"
+      />
 
       <form
         style={{

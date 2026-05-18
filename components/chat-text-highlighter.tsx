@@ -2,6 +2,8 @@
 
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
+import { XIcon } from "@phosphor-icons/react";
 
 interface ChatTextHighlighterProps {
   children: React.ReactNode;
@@ -147,7 +149,8 @@ export const ChatTextHighlighter: React.FC<ChatTextHighlighterProps> = ({
           onMouseDown={(e) => e.stopPropagation()}
         >
           <div className="flex gap-1">
-            <button
+            <Button
+              variant="ghost"
               onClick={async () => {
                 await handleCopy(popup.text);
                 closePopup();
@@ -155,9 +158,10 @@ export const ChatTextHighlighter: React.FC<ChatTextHighlighterProps> = ({
               className="px-2 py-1 text-xs font-medium bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
             >
               Copy
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variant="ghost"
               onClick={() => {
                 handleQuote(popup.text);
                 closePopup();
@@ -165,14 +169,15 @@ export const ChatTextHighlighter: React.FC<ChatTextHighlighterProps> = ({
               className="px-2 py-1 text-xs font-medium bg-secondary text-secondary-foreground rounded hover:bg-secondary/90 transition-colors"
             >
               Quote
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variant="ghost"
               onClick={closePopup}
               className="px-1.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              ✕
-            </button>
+              <XIcon size={16} />
+            </Button>
           </div>
         </div>
       )}
