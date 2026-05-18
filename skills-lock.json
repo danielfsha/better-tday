@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "skills/animate-text/SKILL.md",
       "computedHash": "81b7719e45013fcf651f1f4c9a1ca2af9618e99667ff5cd3e5d102369235ec5e"
+    },
+    "userinterface-wiki": {
+      "source": "raphaelsalaja/userinterface-wiki",
+      "sourceType": "github",
+      "skillPath": "skills/SKILL.md",
+      "computedHash": "1d1fbf49afa29712573e39bea7669b932160ae93bdf96a16d729849641b1fa22"
     }
   }
 }
