@@ -76,7 +76,7 @@ export default function FileTreeRoot() {
 
 // FileTreeNode renders a single node (file or folder)
 function FileTreeNode({ node }: { node: Node }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <li key={node.name}>

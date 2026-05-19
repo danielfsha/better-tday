@@ -11,7 +11,7 @@ export default function UserProfile() {
   return (
     <Popover>
       <PopoverTrigger>
-        <Avatar>
+        <Avatar size="sm">
           <AvatarImage
             src="https://github.com/evilrabbit.png"
             alt="@evilrabbit"
@@ -22,7 +22,7 @@ export default function UserProfile() {
       <PopoverContent align="end" className={"gap-0 p-1"}>
         <div className="flex items-center justify-betweeen w-full hover:bg-gray-300 p-1 py-1.5 rounded-sm cursor-pointer">
           <div className="flex gap-4 items-center">
-            <Avatar size="lg">
+            <Avatar>
               <AvatarImage
                 src="https://github.com/evilrabbit.png"
                 alt="@evilrabbit"

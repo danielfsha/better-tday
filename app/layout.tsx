@@ -46,6 +46,30 @@ export default function RootLayout({
         inter.variable,
       )}
     >
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Prevent pinch-to-zoom in iOS Safari
+              document.addEventListener('gesturestart', function (e) {
+                e.preventDefault();
+              });
+
+              // Prevent Ctrl + Scroll zooming in desktop browsers
+              window.addEventListener('wheel', function (e) {
+                if (e.ctrlKey || e.metaKey) {
+                  e.preventDefault();
+                }
+              }, { passive: false });
+            `,
+          }}
+        />
+      </head>
+
       <body
         className="flex h-svh overflow-hidden font-sans"
         suppressHydrationWarning

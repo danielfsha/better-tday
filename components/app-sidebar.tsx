@@ -65,8 +65,8 @@ export default function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="p-4 py-4 font-sans">
-        <div className="flex gap-4 items-center">
-          <Avatar size="lg">
+        <div className="flex gap-2 items-center">
+          <Avatar>
             <AvatarImage
               src="https://github.com/evilrabbit.png"
               alt="@evilrabbit"
