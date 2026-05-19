@@ -94,9 +94,6 @@ export default function FigmaApp() {
   useEffect(() => {
     if (!canvasElRef.current || !wrapperRef.current) return;
     const wrap = wrapperRef.current;
-    // Set canvas element size to match wrapper
-    canvasElRef.current.width = wrap.clientWidth;
-    canvasElRef.current.height = wrap.clientHeight;
     const c = new fabric.Canvas(canvasElRef.current, {
       width: wrap.clientWidth,
       height: wrap.clientHeight,
@@ -189,13 +186,7 @@ export default function FigmaApp() {
     }, 0);
 
     const ro = new ResizeObserver(() => {
-      // Update canvas element size
-      if (canvasElRef.current) {
-        canvasElRef.current.width = wrap.clientWidth;
-        canvasElRef.current.height = wrap.clientHeight;
-      }
       c.setDimensions({ width: wrap.clientWidth, height: wrap.clientHeight });
-      c.requestRenderAll();
     });
     ro.observe(wrap);
     return () => {
@@ -452,7 +443,21 @@ export default function FigmaApp() {
             <canvas ref={canvasElRef} />
             <MeasurementBadge getCanvas={getCanvas} vp={vp} enabled />
           </div>
+          <div className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-panel/90 px-3 py-1 text-[11px] text-muted-foreground shadow-lg backdrop-blur">
+            ⌘C/V/X/D · ⌘A · ⇧F group · G polygon · drag rulers for guides
+          </div>
         </main>
+
+        <aside className="w-72 overflow-y-auto border-l border-border bg-panel">
+          <PropertyPanel
+            selected={selected}
+            onChange={updateSelected}
+            onLayout={updateLayout}
+            onMetaChange={updateMeta}
+            canvasBg={canvasBg}
+            onCanvasBgChange={setCanvasBg}
+          />
+        </aside>
       </div>
 
       <ExportDialog

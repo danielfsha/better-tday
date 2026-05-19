@@ -92,13 +92,13 @@ export default function DesignPage() {
           {/* Left vertical split */}
           <ResizablePanel defaultSize="20%">
             <ResizablePanelGroup orientation="vertical">
-              <ResizablePanel defaultSize="50%">
+              <ResizablePanel defaultSize="30%">
                 <div className="h-full w-full flex flex-col items-start justify-start p-2">
                   <FileTree />
                 </div>
               </ResizablePanel>
               <ResizableHandle withHandle />
-              <ResizablePanel defaultSize="50%">
+              <ResizablePanel defaultSize="70%">
                 <div className="h-full w-full flex flex-col items-start justify-end p-2">
                   <FormComponent />
                 </div>
@@ -108,22 +108,10 @@ export default function DesignPage() {
           <ResizableHandle withHandle />
 
           {/* Middle panel */}
-          <ResizablePanel defaultSize="60%">
+          <ResizablePanel defaultSize="80%">
             <FigmaApp />
           </ResizablePanel>
           <ResizableHandle withHandle />
-
-          {/* Right panel */}
-          <ResizablePanel defaultSize="20%">
-            {/* <PropertyPanel
-              selected={selected}
-              onChange={updateSelected}
-              onLayout={updateLayout}
-              onMetaChange={updateMeta}
-              canvasBg={canvasBg}
-              onCanvasBgChange={setCanvasBg}
-            /> */}
-          </ResizablePanel>
         </ResizablePanelGroup>
       </div>
     </div>
