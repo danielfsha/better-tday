@@ -61,10 +61,12 @@ const nodes: Node[] = [
   },
 ];
 
+const transition = { bounce: 0, duration: 0.1 };
+
 // FileTree renders the root list
 export default function FileTreeRoot() {
   return (
-    <ul className="select-none flex-1">
+    <ul className="select-none flex-1 font-sans">
       {nodes.map((node) => (
         <FileTreeNode node={node} key={node.name} />
       ))}
@@ -83,7 +85,7 @@ function FileTreeNode({ node }: { node: Node }) {
           <button onClick={() => setIsOpen((v) => !v)} className="p-1 -m-1">
             <motion.span
               animate={{ rotate: isOpen ? 90 : 0 }}
-              transition={{ type: "spring", bounce: 0, duration: 0.1 }}
+              transition={transition}
               className="flex"
             >
               <ChevronRightIcon className="size-4 text-gray-500" />
@@ -94,11 +96,11 @@ function FileTreeNode({ node }: { node: Node }) {
           <DiamondsFourIcon
             weight="fill"
             className={`size-5 text-orange-500 ${
-              node.nodes.length === 0 ? "ml-[22px]" : ""
+              node.nodes.length === 0 ? "ml-5.5" : ""
             }`}
           />
         ) : (
-          <DocumentIcon className="ml-[22px] size-5 text-gray-900" />
+          <DocumentIcon className="ml-5.5 size-5 text-gray-900" />
         )}
         {node.name}
       </span>
@@ -111,7 +113,7 @@ function FileTreeNode({ node }: { node: Node }) {
               height: "auto",
             }}
             exit={{ height: 0 }}
-            transition={{ type: "spring", bounce: 0, duration: 0.1 }}
+            transition={transition}
             className="pl-6 overflow-hidden flex flex-col justify-end"
           >
             {node.nodes.map((child) => (
