@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 
 import { Textarea } from "@/components/ui/textarea";
+import { motion, AnimatePresence } from "motion/react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import {
@@ -28,6 +29,9 @@ const FormComponent: React.FC = () => {
   useIsMobile();
 
   const [files, setFiles] = useState<File[]>([]);
+  const [fileUrls, setFileUrls] = useState<{ [key: string]: string }>({});
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0); // 0-100
 
   const handleInput = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -49,25 +53,20 @@ const FormComponent: React.FC = () => {
     [],
   );
 
+  // Only allow one image at a time
   const addFiles = useCallback(
     (incomingFiles: File[]) => {
-      const filteredFiles = incomingFiles.filter(isAcceptedFile);
-
-      setFiles((prevFiles) => {
-        const existing = new Set(
-          prevFiles.map(
-            (file) => `${file.name}-${file.size}-${file.lastModified}`,
-          ),
-        );
-
-        const uniqueFiles = filteredFiles.filter((file) => {
-          const fileKey = `${file.name}-${file.size}-${file.lastModified}`;
-          if (existing.has(fileKey)) return false;
-          existing.add(fileKey);
-          return true;
-        });
-
-        return [...prevFiles, ...uniqueFiles];
+      const filteredFiles = incomingFiles
+        .filter(isAcceptedFile)
+        .filter((f) => f.type.startsWith("image/"));
+      if (filteredFiles.length === 0) return;
+      const file = filteredFiles[0];
+      setFiles([file]);
+      setFileUrls((prevUrls) => {
+        // Clean up old URLs
+        Object.values(prevUrls).forEach((url) => URL.revokeObjectURL(url));
+        const fileKey = `${file.name}-${file.size}-${file.lastModified}`;
+        return { [fileKey]: URL.createObjectURL(file) };
       });
     },
     [isAcceptedFile],
@@ -83,19 +82,116 @@ const FormComponent: React.FC = () => {
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     noClick: true,
-    multiple: true,
-    accept: {
-      "image/*": [],
-      "application/pdf": [],
-      "application/msword": [],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        [],
-    },
+    multiple: false,
+    accept: { "image/*": [] },
   });
 
   const triggerFileInput = useCallback(() => {
     open();
   }, [open]);
+
+  const removeFile = useCallback(() => {
+    // If uploaded, delete from Cloudflare R2
+    const uploadedUrl = fileUrls.uploaded;
+    if (uploadedUrl) {
+      fetch("/api/cloudflare-r2", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: uploadedUrl }),
+      });
+    }
+    setFiles([]);
+    setFileUrls((prevUrls) => {
+      Object.values(prevUrls).forEach((url) => URL.revokeObjectURL(url));
+      return {};
+    });
+    setUploading(false);
+    setUploadProgress(0);
+  }, [fileUrls]);
+
+  // Clean up all URLs on unmount
+  React.useEffect(() => {
+    return () => {
+      Object.values(fileUrls).forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [fileUrls]);
+
+  // Real upload logic: upload to /api/cloudflare-r2 when a file is dropped
+  React.useEffect(() => {
+    const uploadImage = async (file: File) => {
+      setUploading(true);
+      setUploadProgress(0);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/cloudflare-r2");
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            setUploadProgress(Math.round((event.loaded / event.total) * 100));
+          }
+        };
+
+        xhr.onload = () => {
+          setUploading(false);
+          if (xhr.status === 200) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              if (data.url) {
+                // Replace preview with public URL
+                setFileUrls((prevUrls) => {
+                  Object.values(prevUrls).forEach((url) =>
+                    URL.revokeObjectURL(url),
+                  );
+                  return { uploaded: data.url };
+                });
+              }
+            } catch {}
+          } else {
+            // Error
+            setFiles([]);
+            setFileUrls((prevUrls) => {
+              Object.values(prevUrls).forEach((url) =>
+                URL.revokeObjectURL(url),
+              );
+              return {};
+            });
+            alert("Upload failed: " + (xhr.responseText || xhr.statusText));
+          }
+        };
+
+        xhr.onerror = () => {
+          setUploading(false);
+          setFiles([]);
+          setFileUrls((prevUrls) => {
+            Object.values(prevUrls).forEach((url) => URL.revokeObjectURL(url));
+            return {};
+          });
+          alert("Upload failed: network error");
+        };
+
+        xhr.send(formData);
+      } catch (e) {
+        setUploading(false);
+        setFiles([]);
+        setFileUrls((prevUrls) => {
+          Object.values(prevUrls).forEach((url) => URL.revokeObjectURL(url));
+          return {};
+        });
+        alert(
+          "Upload failed: " +
+            (e instanceof Error ? e.message : "Unknown error"),
+        );
+      }
+    };
+
+    if (files.length === 1 && !uploading) {
+      uploadImage(files[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files]);
 
   return (
     <div
@@ -115,45 +211,62 @@ const FormComponent: React.FC = () => {
 
       {files.length > 0 && (
         <div className="flex flex-row gap-2 p-2">
-          {files.map((file, index) => (
-            <div
-              key={index}
-              draggable={false}
-              onDragStart={(event) => event.preventDefault()}
-              className="relative w-32 h-32 rounded-md bg-gray-200 overflow-hidden flex"
+          <div
+            key={0}
+            draggable={false}
+            onDragStart={(event) => event.preventDefault()}
+            className="relative w-32 h-32 rounded-md bg-gray-200 overflow-hidden flex"
+          >
+            {/* x button */}
+            <Button
+              variant="secondary"
+              size="icon-lg"
+              onClick={removeFile}
+              className="absolute right-1 top-1 z-10 size-6 rounded-full bg-gray-700 hover:bg-gray-700 text-white"
+              tabIndex={-1}
             >
-              {/* x button */}
-              <Button
-                variant="secondary"
-                size="icon-lg"
-                onClick={() =>
-                  setFiles((prevFiles) =>
-                    prevFiles.filter((_, i) => i !== index),
-                  )
-                }
-                className="absolute right-1 top-1 z-10 size-6 rounded-full bg-gray-700 hover:bg-gray-700 text-white"
-                tabIndex={-1}
-              >
-                &times;
-              </Button>
+              &times;
+            </Button>
 
-              {file.type.startsWith("image/") ? (
-                <Image
-                  draggable={false}
-                  onDragStart={(event) => event.preventDefault()}
-                  src={URL.createObjectURL(file)}
-                  alt={file.name}
-                  unoptimized
-                  fill
-                  className="object-cover w-full h-full"
-                />
-              ) : (
+            {(() => {
+              // If upload complete and we have a public URL, use it
+              const url = fileUrls.uploaded || Object.values(fileUrls)[0];
+              if (url) {
+                return (
+                  <Image
+                    draggable={false}
+                    onDragStart={(event) => event.preventDefault()}
+                    src={url}
+                    alt={files[0].name}
+                    unoptimized
+                    fill
+                    className="object-cover w-full h-full"
+                  />
+                );
+              }
+              return (
                 <div className="flex items-center justify-center w-full h-full rounded-sm bg-white">
                   <FileIcon size={32} />
                 </div>
+              );
+            })()}
+
+            {/* Animated overlay for uploading */}
+            <AnimatePresence>
+              {uploading && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                >
+                  <div className="w-10 h-10 flex items-center justify-center">
+                    <span className="inline-block w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  </div>
+                </motion.div>
               )}
-            </div>
-          ))}
+            </AnimatePresence>
+          </div>
         </div>
       )}
 
@@ -167,7 +280,15 @@ const FormComponent: React.FC = () => {
           "active:border-none focus:border-none",
         )}
         rows={1}
+        style={{ maxHeight: "6.6em", overflowY: "auto" }}
         autoFocus
+        onKeyDown={(e) => {
+          // Prevent adding more than 3 lines
+          const lineCount = (input.match(/\n/g)?.length ?? 0) + 1;
+          if (e.key === "Enter" && !e.shiftKey && lineCount >= 3) {
+            e.preventDefault();
+          }
+        }}
         onCompositionStart={() => {
           isCompositionActive.current = true;
         }}

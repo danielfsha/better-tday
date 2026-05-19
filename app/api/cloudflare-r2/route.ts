@@ -1,3 +1,36 @@
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+export async function DELETE(req: NextRequest) {
+  try {
+    const { url } = await req.json();
+    if (!url || typeof url !== "string") {
+      return NextResponse.json({ error: "Missing image URL" }, { status: 400 });
+    }
+
+    // Extract object key from public URL
+    const base =
+      normalizePublicBaseUrl(CLOUDFLARE_BUCKET_PUBLIC_BASE_URL) +
+      "/" +
+      CLOUDFLARE_BUCKET_NAME +
+      "/";
+    if (!url.startsWith(base)) {
+      return NextResponse.json({ error: "Invalid image URL" }, { status: 400 });
+    }
+    const objectKey = decodeURIComponent(url.slice(base.length));
+
+    const deleteCommand = new DeleteObjectCommand({
+      Bucket: CLOUDFLARE_BUCKET_NAME,
+      Key: objectKey,
+    });
+    await r2.send(deleteCommand);
+    return NextResponse.json({ message: "Deleted" }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
 import { NextRequest, NextResponse } from "next/server";
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
@@ -58,7 +91,24 @@ export async function POST(req: NextRequest) {
     }
 
     const formData = await req.formData();
-    const file: File = formData.get("file") as File;
+    // Only allow a single image file
+    const entries = Array.from(formData.entries()).filter(
+      ([key]) => key === "file",
+    );
+    if (entries.length !== 1) {
+      return NextResponse.json(
+        { error: "Only one file can be uploaded at a time." },
+        { status: 400 },
+      );
+    }
+    const file = entries[0][1] as File;
+    if (!file || !(file instanceof File) || !file.type.startsWith("image/")) {
+      return NextResponse.json(
+        { error: "Only image files are allowed." },
+        { status: 400 },
+      );
+    }
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const objectKey = `images/${file.name}`;
