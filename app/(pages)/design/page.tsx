@@ -1,8 +1,6 @@
 "use client";
 
 import FileTree from "@/components/canvas/file-tree";
-import CanvasMenubar from "@/components/canvas/menubar";
-import SettingsPanel from "@/components/canvas/settings";
 import FormComponent from "@/components/form-component";
 import {
   ResizableHandle,
@@ -14,8 +12,8 @@ import { useEffect, useRef, useState } from "react";
 
 import { useCanvas } from "@/hooks/use-canvas";
 import { Canvas } from "fabric";
-import Toolbar from "@/components/canvas/toobar";
-import RulerOverlay from "@/components/canvas/ruler-overlay";
+import FigmaApp from "@/components/canvas";
+import { PropertyPanel } from "@/components/canvas/PropertyPanel";
 
 export default function DesignPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -85,7 +83,7 @@ export default function DesignPage() {
   return (
     <div className="h-screen w-full flex flex-col items-center justify-center">
       <header className="w-full flex items-center justify-between p-1">
-        <CanvasMenubar />
+        <span>menu</span>
         <UserProfile />
       </header>
 
@@ -111,38 +109,20 @@ export default function DesignPage() {
 
           {/* Middle panel */}
           <ResizablePanel defaultSize="60%">
-            <div className="flex-1 flex w-full h-full items-center justify-center">
-              <div
-                ref={containerRef}
-                className="relative w-full h-full overflow-hidden"
-              >
-                {/* Rulers overlay */}
-                {/* Rulers overlay only covers top and left, not drawing area */}
-                <RulerOverlay
-                  width={containerDims.width}
-                  height={containerDims.height}
-                />
-                {/* Canvas is full size but drawing area is offset by rulerSize */}
-                <canvas
-                  ref={canvasRef}
-                  style={{
-                    position: "absolute",
-                    left: 24,
-                    top: 24,
-                    width: `calc(100% - 24px)`,
-                    height: `calc(100% - 24px)`,
-                  }}
-                  className=""
-                />
-                <Toolbar canvasRef={fabricRef} />
-              </div>
-            </div>
+            <FigmaApp />
           </ResizablePanel>
           <ResizableHandle withHandle />
 
           {/* Right panel */}
           <ResizablePanel defaultSize="20%">
-            <SettingsPanel />
+            {/* <PropertyPanel
+              selected={selected}
+              onChange={updateSelected}
+              onLayout={updateLayout}
+              onMetaChange={updateMeta}
+              canvasBg={canvasBg}
+              onCanvasBgChange={setCanvasBg}
+            /> */}
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>
