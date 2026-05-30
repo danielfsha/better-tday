@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "motion/react";
 
 import { AnimatedMaskRevealText } from "./animated-mask-reveal-text";
@@ -10,6 +12,7 @@ import NumberFlow from "@number-flow/react";
 import { useState } from "react";
 
 import UserProfile from "./user-profile";
+import { MarkdownRenderer } from "./markdown";
 
 export default function ChatInterface() {
   const [value, setValue] = useState(50);
@@ -56,26 +59,13 @@ export default function ChatInterface() {
             damping: 30,
             mass: 0.9,
           }}
-          className="flex min-h-0 flex-1 flex-col items-center justify-center gap-8 px-6 py-10 text-center"
+          className="flex min-h-0 flex-1 flex-col items-center justify-center gap-8 px-6 py-10"
         >
           <span className="font-serif text-4xl">
             <NumberFlow value={value} />
           </span>
 
-          <Switch />
-
-          <AnimatedMaskRevealText
-            text={"What would you like\nto design tday?"}
-            className="text-4xl font-serif lg:text-6xl"
-          />
-
-          {/* make a 2 sentence description for the app description*/}
-          <p className="text-gray-600 font-sans max-w-md">
-            Pick a format and start designing your idea. Tday understands your
-            creativity and helps bring it to life.
-          </p>
-
-          <FormComponent />
+          {/* <Switch /> */}
 
           <div className="w-full max-w-75">
             <Slider
@@ -84,6 +74,42 @@ export default function ChatInterface() {
               text="Creativity"
             />
           </div>
+
+          <AnimatedMaskRevealText
+            text={"What would you like\nto design tday?"}
+            className="text-4xl font-serif lg:text-6xl"
+          />
+
+          {/* make a 2 sentence description for the app description*/}
+          <p className="text-gray-600 font-sans max-w-md text-center">
+            Pick a format and start designing your idea. Tday understands your
+            creativity and helps bring it to life.
+          </p>
+
+          <FormComponent />
+
+          <motion.div
+            key="card"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="w-full max-w-137.5"
+          >
+            {[
+              "Raw screenshots of a creator’s first payout dashboard.",
+              "Bloated storefront setups versus Gumroad’s minimalis,.",
+              "Hand-drawn scribble animations.",
+              "Create your work, upload, and get back to living.",
+            ].map((suggestion, index) => (
+              <div
+                className="w-full font-sans text-sm flex rounded-sm p-2 px-3 hover:bg-gray-100"
+                key={index}
+              >
+                <span>{suggestion}</span>
+              </div>
+            ))}
+          </motion.div>
         </motion.section>
       </motion.main>
     </div>

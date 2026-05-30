@@ -13,7 +13,6 @@ import { MessagePartRenderer } from "@/components/message-parts";
 import { deleteTrailingMessages } from "@/actions";
 import { Attachment, ChatMessage, CustomUIDataTypes } from "@/types";
 import { UseChatHelpers } from "@ai-sdk/react";
-import { ComprehensiveUserData } from "@/lib/user-data-server";
 // Define interface for part, messageIndex and partIndex objects
 interface PartInfo {
   part: any;
@@ -27,45 +26,41 @@ interface MessagesProps {
   input: string;
   setInput: (value: string) => void;
   setMessages: UseChatHelpers<ChatMessage>["setMessages"];
-  regenerate: UseChatHelpers<ChatMessage>["regenerate"];
-  stop: UseChatHelpers<ChatMessage>["stop"];
   sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
   suggestedQuestions: string[];
   setSuggestedQuestions: (questions: string[]) => void;
-  status: UseChatHelpers<ChatMessage>["status"];
-  error: Error | null; // Add error from useChat
-  user?: ComprehensiveUserData | null; // Add user prop
   selectedVisibilityType?: "public" | "private"; // Add visibility type
   chatId?: string; // Add chatId prop
   onVisibilityChange?: (visibility: "public" | "private") => void; // Add visibility change handler
   initialMessages?: any[]; // Add initial messages prop to detect existing chat
   isOwner?: boolean; // Add ownership prop
   onHighlight?: (text: string) => void; // Add highlight handler
-  attachmentsRenderer?: (attachments: Attachment[]) => React.ReactNode;
+  // attachmentsRenderer?: (attachments: Attachment[]) => React.ReactNode;
   hasSubmitted?: boolean;
   isTransitioning?: boolean;
   onBeforeSubmit?: () => void;
 }
 
+//
 const Messages: React.FC<MessagesProps> = ({
   messages,
   lastUserMessageIndex,
   setMessages,
   suggestedQuestions,
   setSuggestedQuestions,
-  status,
-  error,
-  user,
+  // status,
+  // error,
+  // user = "test",
   selectedVisibilityType = "private",
   chatId,
   onVisibilityChange,
   initialMessages,
   isOwner,
   onHighlight,
-  attachmentsRenderer,
+  // attachmentsRenderer,
   sendMessage,
-  regenerate,
-  stop,
+  // regenerate,
+  // stop,
   hasSubmitted,
   isTransitioning,
   onBeforeSubmit,
@@ -147,12 +142,12 @@ const Messages: React.FC<MessagesProps> = ({
     const lastMessage = memoizedMessages[lastIndex];
 
     // Case 1: Last message is user and no assistant response yet
-    if (lastMessage?.role === "user" && status === "ready" && !error) {
+    if (lastMessage?.role === "user" && status === "ready" &&) {
       return lastIndex;
     }
 
     // Case 2: Last message is assistant but lacks visible content
-    if (lastMessage?.role === "assistant" && status === "ready" && !error) {
+    if (lastMessage?.role === "assistant" && status === "ready" &&) {
       const parts = lastMessage.parts || [];
 
       const hasVisibleText = parts.some(
@@ -171,7 +166,12 @@ const Messages: React.FC<MessagesProps> = ({
     }
 
     return -1;
-  }, [memoizedMessages, status, error]);
+  }, [
+    memoizedMessages,
+    status,
+
+    // error
+  ]);
 
   // Memoize the retry handler
   const handleRetry = useCallback(async () => {
@@ -188,11 +188,11 @@ const Messages: React.FC<MessagesProps> = ({
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       // Step 3: Delete trailing messages if user is authenticated
-      if (user && lastUserMessage.id) {
-        await deleteTrailingMessages({
-          id: lastUserMessage.id,
-        });
-      }
+      // if (user && lastUserMessage.id) {
+      //   await deleteTrailingMessages({
+      //     id: lastUserMessage.id,
+      //   });
+      // }
 
       // Step 4: Update local state to remove assistant messages
       const newMessages = [];
@@ -208,11 +208,18 @@ const Messages: React.FC<MessagesProps> = ({
       setSuggestedQuestions([]);
 
       // Step 6: Regenerate
-      await regenerate();
+      // await regenerate();
     } catch (error) {
       console.error("Error in retry:", error);
     }
-  }, [messages, user, setMessages, setSuggestedQuestions, regenerate, stop]);
+  }, [
+    messages,
+    // , user,
+    setMessages,
+    setSuggestedQuestions,
+    // regenerate,
+    stop,
+  ]);
 
   // Handle rendering of message parts - using the new MessagePartRenderer component
   const renderPart = useCallback(
@@ -242,15 +249,15 @@ const Messages: React.FC<MessagesProps> = ({
           setReasoningVisibilityMap={setReasoningVisibilityMap}
           setReasoningFullscreenMap={setReasoningFullscreenMap}
           messages={messages}
-          user={user ?? undefined}
+          // user={user ?? undefined}
           isOwner={isOwner}
           selectedVisibilityType={selectedVisibilityType}
           chatId={chatId}
           onVisibilityChange={onVisibilityChange}
           setMessages={setMessages}
           setSuggestedQuestions={setSuggestedQuestions}
-          regenerate={regenerate}
-          stop={stop}
+          // regenerate={regenerate}
+          // stop={stop}
           sendMessage={sendMessage}
           onHighlight={onHighlight}
           annotations={annotations}
@@ -261,14 +268,14 @@ const Messages: React.FC<MessagesProps> = ({
       status,
       hasActiveToolInvocations,
       messages,
-      user,
+      // user,
       isOwner,
       selectedVisibilityType,
       chatId,
       onVisibilityChange,
       setMessages,
       setSuggestedQuestions,
-      regenerate,
+      // regenerate,
       stop,
       sendMessage,
       reasoningVisibilityMap,
@@ -441,7 +448,7 @@ const Messages: React.FC<MessagesProps> = ({
                     ? suggestedQuestions
                     : []
                 }
-                user={user ?? undefined}
+                // user={user ?? undefined}
                 selectedVisibilityType={selectedVisibilityType}
                 isLastMessage={isLastMessage}
                 error={error}
@@ -475,41 +482,7 @@ const Messages: React.FC<MessagesProps> = ({
         })}
       </div>
 
-      {/* Loading animation when status is submitted or streaming with minimal assistant content */}
-      {shouldShowLoading && (
-        <div
-          className={`flex items-start ${shouldReserveLoaderMinHeight ? "min-h-[calc(100vh-18rem)]" : ""} m-0! p-0!`}
-        >
-          <div className="w-full m-0! p-0!">
-            {/* <SciraLogoHeader /> */}
-            <div className="flex space-x-2 mt-5 ml-2">
-              <div
-                className="size-3 rounded-full bg-muted-foreground dark:bg-muted-foreground animate-bounce"
-                style={{ animationDelay: "0ms" }}
-              ></div>
-              <div
-                className="size-3 rounded-full bg-muted-foreground dark:bg-muted-foreground animate-bounce"
-                style={{ animationDelay: "150ms" }}
-              ></div>
-              <div
-                className="size-3 rounded-full bg-muted-foreground dark:bg-muted-foreground animate-bounce"
-                style={{ animationDelay: "300ms" }}
-              ></div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Show global error when there is no assistant message to display it */}
-      {error &&
-        memoizedMessages[memoizedMessages.length - 1]?.role !== "assistant" && (
-          <EnhancedErrorDisplay
-            error={error}
-            user={user ?? undefined}
-            selectedVisibilityType={selectedVisibilityType}
-            handleRetry={handleRetry}
-          />
-        )}
+    
 
       <div ref={messagesEndRef} />
     </div>

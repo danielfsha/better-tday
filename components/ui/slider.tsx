@@ -66,7 +66,7 @@ function Slider({
         {...props}
       >
         <SliderPrimitive.Control className="rounded-md overflow-hidden relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-vertical:h-full data-vertical:min-h-40 data-vertical:w-auto data-vertical:flex-col">
-          <SliderPrimitive.Track className="relative grow overflow-hidden rounded-sm select-none data-horizontal:h-10 data-horizontal:w-full data-vertical:h-full data-vertical:w-1 bg-gray-300 dark:bg-gray-300/10">
+          <SliderPrimitive.Track className="relative grow overflow-hidden rounded-sm select-none data-horizontal:h-10 data-horizontal:w-full data-vertical:h-full data-vertical:w-1 bg-gray-100 dark:bg-gray-100/10 shadow-sm">
             <SliderPrimitive.Indicator
               data-slot="slider-range"
               className="bg-primary select-none data-horizontal:h-full data-vertical:w-full rounded-tr-sm rounded-br-sm data-horizontal:origin-left data-vertical:origin-bottom transition-[transform] will-change-transform"

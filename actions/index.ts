@@ -31,3 +31,9 @@ export const updateChatVisibility = (chatId: string, visible: boolean) => {
     payload: { chatId, visible },
   };
 };
+
+export const deleteTrailingMessages = () => {
+  return {
+    type: "DELETE_TRAILING_MESSAGES",
+  };
+};

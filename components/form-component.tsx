@@ -9,8 +9,10 @@ import {
   ArrowUDownLeftIcon,
   CaretRightIcon,
   FileIcon,
+  ImageIcon,
   PaperclipIcon,
   SwatchesIcon,
+  VideoIcon,
 } from "@phosphor-icons/react";
 import { PlusIcon } from "lucide-react";
 import { useDropzone } from "react-dropzone";
@@ -197,7 +199,7 @@ const FormComponent: React.FC = () => {
     <div
       {...getRootProps({
         className: cn(
-          "w-full max-w-137.5 rounded-lg bg-gray-300 p-0 flex flex-col overflow-hidden gap-1 relative",
+          "w-full max-w-137.5 rounded-lg bg-gray-100 p-0 flex flex-col overflow-hidden gap-1 relative",
         ),
       })}
     >
@@ -297,34 +299,47 @@ const FormComponent: React.FC = () => {
         }}
       />
       <div className="flex items-center justify-between p-1">
-        <Popover>
-          <PopoverTrigger>
-            <Button variant="ghost" size="icon-lg">
-              <PlusIcon size={26} />
+        <div className="flex items-center gap-1">
+          <Popover>
+            <PopoverTrigger>
+              <Button variant="ghost" size="icon-lg">
+                <PlusIcon size={26} />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className={"gap-0 p-1"}>
+              <div className="flex items-center justify-betweeen w-full hover:bg-gray-300 p-1 py-1.5 rounded-sm cursor-pointer">
+                <div
+                  onClick={triggerFileInput}
+                  className="flex items-center justify-start gap-4 flex-1"
+                >
+                  <PaperclipIcon weight="regular" size={20} />
+                  <PopoverDescription>
+                    Upload image form device
+                  </PopoverDescription>
+                </div>
+                {/* <CaretRightIcon /> */}
+              </div>
+              <div className="flex items-center justify-betweeen w-full hover:bg-gray-300 p-1 py-1.5 rounded-sm cursor-pointer">
+                <div className="flex items-center justify-start gap-4 flex-1">
+                  <SwatchesIcon weight="fill" size={20} />
+                  <PopoverDescription>Extract brand guide.</PopoverDescription>
+                </div>
+                <CaretRightIcon />
+              </div>
+            </PopoverContent>
+          </Popover>
+          <div className="flex items-center p-0.5 bg-white rounded-lg bg-gray-200 cursor-pointer">
+            <Button variant="outline" className="bg-white py-0.5">
+              <ImageIcon size={26} weight="fill" />
+              Image
             </Button>
-          </PopoverTrigger>
-          <PopoverContent align="start" className={"gap-0 p-1"}>
-            <div className="flex items-center justify-betweeen w-full hover:bg-gray-300 p-1 py-1.5 rounded-sm cursor-pointer">
-              <div
-                onClick={triggerFileInput}
-                className="flex items-center justify-start gap-4 flex-1"
-              >
-                <PaperclipIcon weight="regular" size={20} />
-                <PopoverDescription>
-                  Upload image form device
-                </PopoverDescription>
-              </div>
-              {/* <CaretRightIcon /> */}
-            </div>
-            <div className="flex items-center justify-betweeen w-full hover:bg-gray-300 p-1 py-1.5 rounded-sm cursor-pointer">
-              <div className="flex items-center justify-start gap-4 flex-1">
-                <SwatchesIcon weight="fill" size={20} />
-                <PopoverDescription>Extract brand guide.</PopoverDescription>
-              </div>
-              <CaretRightIcon />
-            </div>
-          </PopoverContent>
-        </Popover>
+            <Button variant="ghost" className="hover:bg-transparent py-1">
+              <VideoIcon size={26} weight="fill" />
+              Video
+            </Button>
+          </div>
+        </div>
+
         <Button variant="ghost" size="icon-lg">
           <ArrowUDownLeftIcon size={26} />
         </Button>

@@ -3489,18 +3489,18 @@ export const CopyButton = React.memo(({ text }: { text: string }) => {
     sileo.success({
       title: "Copied to clipboard",
       description: "You can now paste it anywhere",
-      icon: <Copy className="h-4 w-4" />,
+      icon: <Copy className="size-6" />,
     });
   }, [text]);
 
   return (
     <Button
       variant="ghost"
-      size="sm"
+      size="icon-sm"
       onClick={handleCopy}
       className="h-8 px-2 text-xs rounded-full"
     >
-      {isCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+      {isCopied ? <Check className="size-6" /> : <Copy className="size-6" />}
     </Button>
   );
 });
