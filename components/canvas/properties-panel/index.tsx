@@ -227,7 +227,7 @@ export default function PropertiesPanel({
   if (isCollapsed) {
     return (
       <div
-        className="absolute top-2 right-2 w-[280px] bg-[#2D2D2D] flex items-center justify-between cursor-pointer rounded-sm px-1 pr-2"
+        className="absolute top-2 right-2 w-[280px] bg-[#2D2D2D] flex items-center justify-between cursor-pointer rounded-sm px-1 pr-1.5"
         onClick={() => setIsCollapsed(false)}
       >
         <Button
@@ -283,7 +283,8 @@ export default function PropertiesPanel({
       </div>
 
       {selectedObject ? (
-        <div className="w-full flex flex-col gap-3 overflow-y-auto p-2 pb-4">
+        <div className="w-full overflow-y-auto p-2 pb-4 flex flex-col gap-2">
+          {/* Always visible panels */}
           <PositionPanel
             left={left}
             top={top}
@@ -291,7 +292,6 @@ export default function PropertiesPanel({
             setTop={setTop}
             handleInputChange={handleInputChange}
           />
-
           <LayoutPanel
             width={width}
             height={height}
@@ -305,7 +305,6 @@ export default function PropertiesPanel({
             setFlipY={setFlipY}
             handleInputChange={handleInputChange}
           />
-
           <AppearancePanel
             opacity={opacity}
             visible={visible}
@@ -314,29 +313,114 @@ export default function PropertiesPanel({
             handleInputChange={handleInputChange}
           />
 
-          <FillPanel
-            fill={fill}
-            setFill={setFill}
-            handleInputChange={handleInputChange}
-          />
-
-          <StrokePanel
-            stroke={stroke}
-            strokeWidth={strokeWidth}
-            strokeDashArray={strokeDashArray}
-            setStroke={setStroke}
-            setStrokeWidth={setStrokeWidth}
-            setStrokeDashArray={setStrokeDashArray}
-            handleInputChange={handleInputChange}
-          />
-
-          <EffectPanel
-            shadow={shadow}
-            setShadow={setShadow}
-            handleInputChange={handleInputChange}
-          />
-
-          <GuideExportPanel />
+          {/* Optional panels with + button to add default value */}
+          {/* Fill Section */}
+          <div className="w-full flex flex-col border-b border-[#232323] pb-2 mb-2 last:mb-0 last:pb-0 last:border-b-0">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-gray-300">Fill</span>
+              {fill ? (
+                <button
+                  type="button"
+                  className="text-gray-400 hover:text-red-400 px-1"
+                  onClick={() => setFill("")}
+                  title="Remove Fill"
+                >
+                  &minus;
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="text-gray-400 hover:text-green-400 px-1"
+                  onClick={() => setFill("#000000")}
+                  title="Add Fill"
+                >
+                  +
+                </button>
+              )}
+            </div>
+            {fill && (
+              <FillPanel
+                fill={fill}
+                setFill={setFill}
+                handleInputChange={handleInputChange}
+              />
+            )}
+          </div>
+          {/* Stroke Section */}
+          <div className="w-full flex flex-col border-b border-[#232323] pb-2 mb-2 last:mb-0 last:pb-0 last:border-b-0">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-gray-300">Stroke</span>
+              {stroke ? (
+                <button
+                  type="button"
+                  className="text-gray-400 hover:text-red-400 px-1"
+                  onClick={() => setStroke("")}
+                  title="Remove Stroke"
+                >
+                  &minus;
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="text-gray-400 hover:text-green-400 px-1"
+                  onClick={() => setStroke("#000000")}
+                  title="Add Stroke"
+                >
+                  +
+                </button>
+              )}
+            </div>
+            {stroke && (
+              <StrokePanel
+                stroke={stroke}
+                strokeWidth={strokeWidth}
+                strokeDashArray={strokeDashArray}
+                setStroke={setStroke}
+                setStrokeWidth={setStrokeWidth}
+                setStrokeDashArray={setStrokeDashArray}
+                handleInputChange={handleInputChange}
+              />
+            )}
+          </div>
+          {/* Effect Section */}
+          <div className="w-full flex flex-col border-b border-[#232323] pb-2 mb-2 last:mb-0 last:pb-0 last:border-b-0">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-gray-300">Effect</span>
+              {shadow !== "none" && shadow !== "" ? (
+                <button
+                  type="button"
+                  className="text-gray-400 hover:text-red-400 px-1"
+                  onClick={() => setShadow("none")}
+                  title="Remove Effect"
+                >
+                  &minus;
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="text-gray-400 hover:text-green-400 px-1"
+                  onClick={() => setShadow("rgba(0,0,0,0.2)")}
+                  title="Add Effect"
+                >
+                  +
+                </button>
+              )}
+            </div>
+            {shadow !== "none" && shadow !== "" && (
+              <EffectPanel
+                shadow={shadow}
+                setShadow={setShadow}
+                handleInputChange={handleInputChange}
+              />
+            )}
+          </div>
+          {/* Export Section (always visible, no add/remove) */}
+          <div className="w-full flex flex-col border-b border-[#232323] pb-2 mb-2 last:mb-0 last:pb-0 last:border-b-0">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-violet-400">Export</span>
+            </div>
+            <GuideExportPanel />
+          </div>
         </div>
       ) : (
         <div className="w-full flex items-center justify-center h-32">
