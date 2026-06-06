@@ -1,5 +1,5 @@
 import * as fabric from "fabric";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
 export default function ToolBar({ canvas }: { canvas?: fabric.Canvas | null }) {
   function addText(): void {
@@ -28,7 +28,7 @@ export default function ToolBar({ canvas }: { canvas?: fabric.Canvas | null }) {
   }
 
   return (
-    <div className="absolute top-2 left-2 w-[42px] bg-[#2D2D2D] flex flex-col items-center justify-start gap-1 rounded-sm p-1">
+    <div className="w-[42px] bg-[#2D2D2D] flex flex-col items-center justify-start gap-1 rounded-sm p-1">
       <Button
         onClick={() => addRectangle()}
         variant="ghost"

@@ -5,10 +5,16 @@ import React, { useEffect, useRef, useState } from "react";
 import * as fabric from "fabric";
 import ToolBar from "./tool-bar";
 import PropertiesPanel from "./properties-panel";
+import LeftSidebar from "./left-sidebar";
 
 export const Canvas = () => {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
+
+  const toggleSidebar = () => {
+    setSidebarCollapsed((prev) => !prev);
+  };
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -48,9 +54,17 @@ export const Canvas = () => {
 
   return (
     <div className="relative w-full h-full bg-gray-300 flex items-center justify-center">
-      <ToolBar canvas={canvas} />
-      <canvas ref={canvasRef} className="w-full h-full" />
-      <PropertiesPanel canvas={canvas} />
+      <LeftSidebar
+        canvas={canvas}
+        sidebarCollapsed={sidebarCollapsed}
+        toggleSidebar={toggleSidebar}
+      />
+      <canvas ref={canvasRef} className="flex-1 h-full" />
+      <PropertiesPanel
+        canvas={canvas}
+        sidebarCollapsed={sidebarCollapsed}
+        toggleSidebar={toggleSidebar}
+      />
     </div>
   );
 };

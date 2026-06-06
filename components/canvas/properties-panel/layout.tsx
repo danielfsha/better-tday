@@ -1,5 +1,6 @@
 // Layout panel for canvas properties
 import React from "react";
+import { NumberInput } from "@/components/ui/number-input";
 
 export default function LayoutPanel({
   width,
@@ -18,35 +19,27 @@ export default function LayoutPanel({
 }: any) {
   // layoutAlign: left, center, right
   return (
-    <div className="w-full flex flex-col gap-2 p-2 rounded-lg bg-[#232323] border border-[#353535]">
+    <div className="w-full flex flex-col gap-2">
       <span className="text-xs font-semibold text-gray-400 mb-1">Layout</span>
       <div className="flex gap-2 w-full">
         <div className="flex flex-col gap-1 flex-1">
-          <label className="text-xs text-gray-400">W</label>
-          <input
-            type="number"
+          <NumberInput
+            label="W"
             value={width}
-            onChange={(e) =>
-              handleInputChange(
-                setWidth,
-                "width",
-              )(parseFloat(e.target.value) || 0)
-            }
-            className="w-full p-1 text-xs text-gray-200 bg-[#18181b] border border-[#353535] rounded"
+            onChange={(v) => handleInputChange(setWidth, "width")(v)}
+            className="w-full"
+            inputClassName="w-full"
+            min={1}
           />
         </div>
         <div className="flex flex-col gap-1 flex-1">
-          <label className="text-xs text-gray-400">H</label>
-          <input
-            type="number"
+          <NumberInput
+            label="H"
             value={height}
-            onChange={(e) =>
-              handleInputChange(
-                setHeight,
-                "height",
-              )(parseFloat(e.target.value) || 0)
-            }
-            className="w-full p-1 text-xs text-gray-200 bg-[#18181b] border border-[#353535] rounded"
+            onChange={(v) => handleInputChange(setHeight, "height")(v)}
+            className="w-full"
+            inputClassName="w-full"
+            min={1}
           />
         </div>
         <div className="flex flex-col gap-1 items-center">
@@ -80,18 +73,13 @@ export default function LayoutPanel({
       </div>
       <div className="flex gap-2 w-full">
         <div className="flex flex-col gap-1 flex-1">
-          <label className="text-xs text-gray-400">Angle</label>
-          <input
-            type="number"
-            step="1"
+          <NumberInput
+            label="Angle"
             value={angle}
-            onChange={(e) =>
-              handleInputChange(
-                setAngle,
-                "angle",
-              )(parseFloat(e.target.value) || 0)
-            }
-            className="w-full p-1 text-xs text-gray-200 bg-[#18181b] border border-[#353535] rounded"
+            onChange={(v) => handleInputChange(setAngle, "angle")(v)}
+            className="w-full"
+            inputClassName="w-full"
+            step={1}
           />
         </div>
         <div className="flex flex-col gap-1 flex-1">

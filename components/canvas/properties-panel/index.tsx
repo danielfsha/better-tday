@@ -12,10 +12,13 @@ import { Button } from "@/components/ui/button";
 
 export default function PropertiesPanel({
   canvas,
+  sidebarCollapsed,
+  toggleSidebar,
 }: {
   canvas?: fabric.Canvas | null;
+  sidebarCollapsed: boolean;
+  toggleSidebar: () => void;
 }) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [selectedObject, setSelectedObject] = useState<fabric.Object | null>(
     null,
   );
@@ -224,17 +227,10 @@ export default function PropertiesPanel({
     shadow,
   ]);
 
-  if (isCollapsed) {
+  if (sidebarCollapsed) {
     return (
-      <div
-        className="absolute top-2 right-2 w-[280px] bg-[#2D2D2D] flex items-center justify-between cursor-pointer rounded-sm px-1 pr-1.5"
-        onClick={() => setIsCollapsed(false)}
-      >
-        <Button
-          size="icon-lg"
-          variant="ghost"
-          onClick={() => setIsCollapsed(false)}
-        >
+      <div className="absolute top-2 right-2 w-[280px] bg-[#1F1F1F] flex items-center justify-between rounded-sm px-1 pr-1.5">
+        <Button size="icon-lg" variant="ghost" onClick={() => toggleSidebar()}>
           <svg
             width="16"
             height="16"
@@ -256,13 +252,9 @@ export default function PropertiesPanel({
   }
 
   return (
-    <div className="absolute top-0 right-0 w-[300px] h-full bg-[#2D2D2D] flex flex-col items-center justify-start gap-1 p-1 overflow-hidden">
+    <div className="absolute top-0 right-0 w-[300px] h-full bg-[#1F1F1F] flex flex-col items-center justify-start gap-1 p-1 overflow-hidden">
       <div className="w-full flex items-center justify-between text-gray-300 pr-1">
-        <Button
-          size="icon-lg"
-          variant="ghost"
-          onClick={() => setIsCollapsed(true)}
-        >
+        <Button size="icon-lg" variant="ghost" onClick={() => toggleSidebar()}>
           <svg
             width="16"
             height="16"

@@ -776,4 +776,14 @@
   --sileo-btn-bg-hover: color-mix(in oklch, var(--_c) 25%, transparent);
 }
 
-/* Sugar-high syntax highlighting styles */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
