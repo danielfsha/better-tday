@@ -43,7 +43,7 @@ export default function LeftSidebar({
   }
 
   return (
-    <div className="absolute top-0 left-0 w-[350px] h-full flex gap-1 overflow-hidden">
+    <div className="absolute top-0 left-0 w-[350px] h-full flex overflow-hidden">
       <div className="w-full bg-[#1F1F1F] h-full p-1">hey</div>
 
       <div className="p-1">

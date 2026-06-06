@@ -1,6 +1,8 @@
 import * as fabric from "fabric";
 import { Button } from "@/components/ui/button";
 
+import { motion } from "motion/react";
+
 export default function ToolBar({ canvas }: { canvas?: fabric.Canvas | null }) {
   function addText(): void {
     if (canvas) {
@@ -28,12 +30,24 @@ export default function ToolBar({ canvas }: { canvas?: fabric.Canvas | null }) {
   }
 
   return (
-    <div className="w-[42px] bg-[#2D2D2D] flex flex-col items-center justify-start gap-1 rounded-sm p-1">
+    <motion.div
+      layoutId="toolbar"
+      layout="position"
+      transition={{
+        layout: {
+          type: "spring" as const,
+          stiffness: 1000,
+          damping: 25,
+          mass: 0.35,
+        },
+      }}
+      className="w-[42px] transform-gpu will-change-transform bg-[#2D2D2D] flex flex-col items-center justify-start gap-0.5 rounded-sm p-1.5 py-0.5"
+    >
       <Button
         onClick={() => addRectangle()}
-        variant="ghost"
+        variant="default"
         size="icon-lg"
-        className="size-[40px] rounded-sm"
+        className="size-[40px] rounded-sm bg-white/10"
       >
         <svg
           className="size-7"
@@ -118,6 +132,6 @@ export default function ToolBar({ canvas }: { canvas?: fabric.Canvas | null }) {
           />
         </svg>
       </Button>
-    </div>
+    </motion.div>
   );
 }
