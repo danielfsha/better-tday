@@ -199,7 +199,7 @@ const FormComponent: React.FC = () => {
     <div
       {...getRootProps({
         className: cn(
-          "w-full max-w-137.5 rounded-lg bg-gray-100 p-0 flex flex-col overflow-hidden gap-1 relative",
+          "w-full max-w-137.5 rounded-lg bg-gray-100/10 p-0 flex flex-col overflow-hidden gap-1 relative",
         ),
       })}
     >
@@ -278,7 +278,7 @@ const FormComponent: React.FC = () => {
         value={input}
         onChange={handleInput}
         className={cn(
-          "font-sans min-h-11 resize-none border-none bg-transparent px-4 py-3 shadow-none outline-none focus-visible:ring-0 text-md",
+          "font-sans min-h-11 resize-none border-none bg-none px-4 py-3 shadow-none outline-none focus-visible:ring-0 text-md",
           "active:border-none focus:border-none",
         )}
         rows={1}
@@ -301,11 +301,13 @@ const FormComponent: React.FC = () => {
       <div className="flex items-center justify-between p-1">
         <div className="flex items-center gap-1">
           <Popover>
-            <PopoverTrigger>
-              <Button variant="ghost" size="icon-lg">
-                <PlusIcon size={26} />
-              </Button>
-            </PopoverTrigger>
+            <PopoverTrigger
+              render={
+                <Button variant="ghost" size="icon-lg">
+                  <PlusIcon size={26} className="text-white/80" />
+                </Button>
+              }
+            />
             <PopoverContent align="start" className={"gap-0 p-1"}>
               <div className="flex items-center justify-betweeen w-full hover:bg-gray-300 p-1 py-1.5 rounded-sm cursor-pointer">
                 <div
@@ -328,20 +330,10 @@ const FormComponent: React.FC = () => {
               </div>
             </PopoverContent>
           </Popover>
-          <div className="flex items-center p-0.5 bg-white rounded-lg bg-gray-200 cursor-pointer">
-            <Button variant="outline" className="bg-white py-0.5">
-              <ImageIcon size={26} weight="fill" />
-              Image
-            </Button>
-            <Button variant="ghost" className="hover:bg-transparent py-1">
-              <VideoIcon size={26} weight="fill" />
-              Video
-            </Button>
-          </div>
         </div>
 
         <Button variant="ghost" size="icon-lg">
-          <ArrowUDownLeftIcon size={26} />
+          <ArrowUDownLeftIcon size={26} className="text-white/80" />
         </Button>
       </div>
     </div>

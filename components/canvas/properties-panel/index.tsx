@@ -252,7 +252,7 @@ export default function PropertiesPanel({
   }
 
   return (
-    <div className="absolute top-0 right-0 w-[300px] h-full bg-[#1F1F1F] flex flex-col items-center justify-start gap-1 p-1 overflow-hidden">
+    <div className="absolute top-0 right-0 w-[300px] h-full bg-[#1F1F1F] flex flex-col items-center justify-start gap-1 overflow-y-hidden">
       <div className="w-full flex items-center justify-between text-gray-300 pr-1">
         <Button size="icon-lg" variant="ghost" onClick={() => toggleSidebar()}>
           <svg

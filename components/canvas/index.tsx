@@ -17,38 +17,39 @@ export const Canvas = () => {
   };
 
   useEffect(() => {
-    if (canvasRef.current) {
-      const fabricCanvas = new fabric.Canvas(canvasRef.current, {
-        width: 400,
-        height: 600,
-      });
-
-      // Ensure scaling is from the corner, not center
-      fabricCanvas.centeredScaling = false;
-
-      fabricCanvas.backgroundColor = "#fff";
-      fabricCanvas.renderAll();
-
-      setCanvas(fabricCanvas);
-
-      // Example: add a rect with origin at top-left
-      const rect = new fabric.Rect({
-        left: 100,
-        top: 100,
-        fill: "red",
-        width: 200,
-        height: 200,
-        originX: "left",
-        originY: "top",
-      });
-      fabricCanvas.add(rect);
-      setCanvas(fabricCanvas);
+    const element = canvasRef.current;
+    if (!element) {
+      return;
     }
 
+    const fabricCanvas = new fabric.Canvas(element, {
+      width: 400,
+      height: 600,
+    });
+
+    // Ensure scaling is from the corner, not center
+    fabricCanvas.centeredScaling = false;
+
+    fabricCanvas.backgroundColor = "#fff";
+    fabricCanvas.renderAll();
+
+    // Example: add a rect with origin at top-left
+    const rect = new fabric.Rect({
+      left: 100,
+      top: 100,
+      fill: "red",
+      width: 200,
+      height: 200,
+      originX: "left",
+      originY: "top",
+    });
+    fabricCanvas.add(rect);
+
+    setCanvas(fabricCanvas);
+
     return () => {
-      if (canvas) {
-        canvas.dispose();
-      }
+      fabricCanvas.dispose();
+      setCanvas(null);
     };
   }, []);
 

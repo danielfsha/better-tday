@@ -2,6 +2,7 @@ import * as fabric from "fabric";
 import { Button } from "@/components/ui/button";
 
 import { motion } from "motion/react";
+import { Separator } from "@/components/ui/separator";
 
 export default function ToolBar({ canvas }: { canvas?: fabric.Canvas | null }) {
   function addText(): void {
@@ -51,8 +52,8 @@ export default function ToolBar({ canvas }: { canvas?: fabric.Canvas | null }) {
       >
         <svg
           className="size-7"
-          width="24"
-          height="24"
+          width="18"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -67,8 +68,8 @@ export default function ToolBar({ canvas }: { canvas?: fabric.Canvas | null }) {
       <Button variant="ghost" size="icon-lg" className="size-[40px] rounded-sm">
         <svg
           className="size-7"
-          width="24"
-          height="24"
+          width="18"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -80,11 +81,13 @@ export default function ToolBar({ canvas }: { canvas?: fabric.Canvas | null }) {
         </svg>
       </Button>
 
+      <Separator />
+
       <Button variant="ghost" size="icon-lg" className="size-[40px] rounded-sm">
         <svg
           className="size-7"
-          width="24"
-          height="24"
+          width="18"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -99,8 +102,8 @@ export default function ToolBar({ canvas }: { canvas?: fabric.Canvas | null }) {
       <Button variant="ghost" size="icon-lg" className="size-[40px] rounded-sm">
         <svg
           className="size-7"
-          width="24"
-          height="24"
+          width="18"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -112,6 +115,8 @@ export default function ToolBar({ canvas }: { canvas?: fabric.Canvas | null }) {
         </svg>
       </Button>
 
+      <Separator />
+
       <Button
         onClick={() => addText()}
         variant="ghost"
@@ -120,8 +125,8 @@ export default function ToolBar({ canvas }: { canvas?: fabric.Canvas | null }) {
       >
         <svg
           className="size-7"
-          width="24"
-          height="24"
+          width="18"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
